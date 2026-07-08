@@ -13,8 +13,6 @@ await prisma.$transaction(async (tx) => {
   await tx.demandWeek.deleteMany({});
   await tx.availabilityDay.deleteMany({});
   await tx.availabilityMonth.deleteMany({});
-
-  // Delete tables that reference Category
   // await tx.shiftAssignment.deleteMany({});
   await tx.shift.deleteMany({});
 

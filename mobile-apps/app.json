@@ -8,7 +8,11 @@
     "scheme": "navigation",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.habib05.navigation",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -45,7 +49,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "6e530e2a-060d-47eb-a0e7-309c91d9d299"
+        "projectId": "6f141c92-2636-468c-9deb-dd93d1b0ddaa"
       }
     },
     "owner": "habib-octopis-team"
