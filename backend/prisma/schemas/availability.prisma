@@ -1,0 +1,37 @@
+model AvailabilityMonth {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  year        Int
+  month       Int
+  status      AvailabilityMonthStatus @default(DRAFT)
+  cutoffAt    DateTime
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  days AvailabilityDay[]
+
+  @@unique([userId, year, month])
+  @@index([year, month])
+  @@index([status])
+  @@map("availability_months")
+}
+
+model AvailabilityDay {
+  id                  String            @id @default(cuid())
+  availabilityMonthId String
+  availabilityMonth   AvailabilityMonth @relation(fields: [availabilityMonthId], references: [id], onDelete: Cascade)
+
+  date               DateTime              @db.Date
+  status             DayAvailabilityStatus
+  note               String?
+  preferredStartTime DateTime?
+  preferredEndTime   DateTime?
+
+  @@unique([availabilityMonthId, date])
+  @@index([date])
+  @@map("availability_days")
+}

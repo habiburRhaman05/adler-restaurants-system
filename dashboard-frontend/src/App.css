@@ -1,0 +1,4 @@
+/* Sidebar glassmorphism — complementary to Tailwind bg-white/75 backdrop-blur-xl */
+.sidebar {
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}

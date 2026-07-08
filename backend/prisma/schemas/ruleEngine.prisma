@@ -1,0 +1,43 @@
+model OrgSettings {
+  id Int @id @default(1)
+
+  maxDailyHours             Decimal @db.Decimal(4, 2)
+  maxWeeklyHours            Decimal @db.Decimal(4, 2)
+  minRestHoursBetweenShifts Decimal @db.Decimal(4, 2)
+  minBreakMinutes           Int
+  breakRequiredAfterHours   Decimal @default(5.50) @db.Decimal(4, 2)
+  breakRules                Json?
+
+  sessionTimeoutMinutes Int   @default(30)
+  notificationPrefs     Json?
+
+  swapExpiryHours Int @default(72)
+
+  // How many minutes before a shift's start an employee may clock in.
+  earlyClockInWindowMinutes Int @default(15)
+
+  // Default shift window ("HH:mm", UTC) applied when generating shifts from
+  // the day-level demand grid, which stores headcount but no times.
+  defaultShiftStartTime String @default("09:00")
+  defaultShiftEndTime   String @default("17:00")
+
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@map("org_settings")
+}
+
+model RuleCheckLog {
+  id          String   @id @default(cuid())
+  context     String
+  entityId    String
+  passed      Boolean
+  details     Json
+  checkedAt   DateTime @default(now())
+  checkedById String?
+  checkedBy   Admin?   @relation("RuleCheckActor", fields: [checkedById], references: [id])
+
+  @@index([context, entityId])
+  @@index([checkedAt])
+  @@map("rule_check_logs")
+}

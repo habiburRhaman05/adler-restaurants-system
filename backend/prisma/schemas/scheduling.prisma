@@ -1,0 +1,72 @@
+model WeeklyPlan {
+  id            String   @id @default(cuid())
+  year          Int
+  month         Int
+  weekNumber    Int
+  weekStartDate DateTime @db.Date
+  weekEndDate   DateTime @db.Date
+
+  status        PlanStatus @default(DRAFT)
+  submittedAt   DateTime?
+  submittedById String?
+  submittedBy   Admin?     @relation("PlanSubmittedBy", fields: [submittedById], references: [id])
+
+  needsRenotify Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shifts  Shift[]
+  demands StaffingDemand[]
+
+  @@unique([year, month, weekNumber])
+  @@index([status])
+  @@index([weekStartDate, weekEndDate])
+  @@map("weekly_plans")
+}
+
+model Shift {
+  id           String     @id @default(cuid())
+  weeklyPlanId String
+  weeklyPlan   WeeklyPlan @relation(fields: [weeklyPlanId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  date DateTime @db.Date
+
+  startTime DateTime
+  endTime   DateTime
+
+  actualStartTime    DateTime?
+  actualEndTime      DateTime?
+  actualBreakMinutes Int?
+
+  status          ShiftStatus @default(PENDING)
+  rejectionReason String?
+
+  ruleViolations Json?
+  rulePassed     Boolean @default(true)
+
+  notifiedAt DateTime?
+
+  // Set when an approved leave request auto-cancelled this shift.
+  leaveRequestId String?
+  leaveRequest   LeaveRequest? @relation(fields: [leaveRequestId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  swapsAsInitiatorShift SwapRequest[] @relation("InitiatorShift")
+  swapsAsRecipientShift SwapRequest[] @relation("RecipientShift")
+  timeEntries           TimeEntry[]
+
+  @@index([userId, date])
+  @@index([weeklyPlanId])
+  @@index([categoryId])
+  @@index([date, status])
+  @@map("shifts")
+}

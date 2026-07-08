@@ -1,0 +1,48 @@
+// Weekly staffing "Demands" — a Sunday-based week plan holding a per-day,
+// per-category required headcount ("how many employees are needed in each
+// category on each day"). This is the day-level demand grid behind the admin
+// "Demands" page, distinct from the shift-slot-level StaffingDemand model.
+
+enum DemandWeekStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model DemandWeek {
+  id            String           @id @default(cuid())
+  weekStartDate DateTime         @db.Date // always a Sunday
+  weekEndDate   DateTime         @db.Date // the following Saturday
+  status        DemandWeekStatus @default(DRAFT)
+  publishedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  demands DayDemand[]
+
+  @@unique([weekStartDate])
+  @@index([status])
+  @@index([weekStartDate, weekEndDate])
+  @@map("demand_weeks")
+}
+
+model DayDemand {
+  id           String     @id @default(cuid())
+  demandWeekId String
+  demandWeek   DemandWeek @relation(fields: [demandWeekId], references: [id], onDelete: Cascade)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  date          DateTime @db.Date
+  requiredCount Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([demandWeekId, categoryId, date])
+  @@index([demandWeekId])
+  @@index([categoryId])
+  @@index([date])
+  @@map("day_demands")
+}

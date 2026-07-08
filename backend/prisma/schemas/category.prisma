@@ -1,0 +1,33 @@
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children Category[] @relation("CategoryHierarchy")
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users         UserCategory[]
+  shifts        Shift[]
+  staffingNeeds StaffingDemand[]
+  shiftOffers   ShiftOffer[]
+  dayDemands    DayDemand[]
+
+  @@unique([parentId, name])
+  @@index([parentId])
+  @@map("categories")
+}
+
+model UserCategory {
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@id([userId, categoryId])
+  @@index([categoryId])
+  @@map("user_categories")
+}

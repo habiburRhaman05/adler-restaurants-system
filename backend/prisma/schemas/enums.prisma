@@ -1,0 +1,100 @@
+enum AvailabilityMonthStatus {
+  DRAFT
+  SUBMITTED
+  LOCKED
+}
+
+enum DayAvailabilityStatus {
+  AVAILABLE
+  UNAVAILABLE
+  WISH
+}
+
+enum NotificationType {
+  WEEKLY_SHIFTS_PUBLISHED
+  SHIFT_OFFER_PUBLISHED
+  AVAILABILITY_REMINDER
+  SWAP_REQUEST_RECEIVED
+  SWAP_REQUEST_RESULT
+  SWAP_PENDING_ADMIN_APPROVAL
+  SHIFT_CHANGED
+  RULE_VIOLATION
+  LEAVE_REQUEST_RESULT
+  GENERAL
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+enum PlanStatus {
+  DRAFT
+  SUBMITTED
+  PUBLISHED
+}
+
+enum ShiftStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  SWAPPED_OUT
+}
+
+enum SwapType {
+  TARGETED
+  OPEN
+}
+
+enum SwapStatus {
+  PENDING_RECIPIENT
+  PENDING_ADMIN_APPROVAL
+  APPROVED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum CredentialDeliveryMethod {
+  EMAIL
+  SMS
+  IN_PERSON
+}
+
+enum ContractType {
+  HOURLY
+  MONTHLY_SALARY
+  WORKLOAD_PERCENT
+}
+
+enum EmployeeType {
+  FULL_TIME
+  PART_TIME
+}
+
+enum ShiftResponseStatus {
+  ACCEPTED
+  REJECTED
+}
+
+enum ShiftApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ShiftSwapStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}

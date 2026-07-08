@@ -1,0 +1,14 @@
+{
+  "name": "adler-mock-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mock API for the Adler staff app. Mirrors the future real API contract exactly — swap EXPO_PUBLIC_API_URL to switch to the real backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "json-server": "0.17.4"
+  }
+}

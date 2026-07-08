@@ -1,0 +1,10 @@
+node_modules
+.env
+pnpm-lock.yaml
+/generated/prisma
+/dist
+/src/generated/prisma
+/src/generated/prisma
+
+# Prisma engine copied next to the serverless function (rebuilt on deploy)
+api/*.node

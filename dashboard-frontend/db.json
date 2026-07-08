@@ -1,0 +1,1572 @@
+{
+  "users": [
+    {
+      "id": "admin1",
+      "name": "Martin Keller",
+      "email": "admin@adler.ch",
+      "password": "Admin@123",
+      "role": "admin",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Martin",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "employees": [
+    {
+      "id": "emp2",
+      "name": "Jacob Jones",
+      "email": "jacob@example.com",
+      "department": "Kitchen",
+      "designation": "Grill Cook",
+      "employmentType": "Intern",
+      "status": "Active",
+      "salary": 2400,
+      "phone": "0170000002",
+      "address": "5 Bahnhofstrasse, Zurich",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Jacob",
+      "categories": [
+        "kitchen"
+      ],
+      "contract": "monthly",
+      "workload": 100,
+      "createdAt": "2024-01-06T00:00:00Z"
+    },
+    {
+      "id": "emp3",
+      "name": "Kathryn Murphy",
+      "email": "kathryn@example.com",
+      "department": "Bar",
+      "designation": "Bartender",
+      "employmentType": "Full-time",
+      "status": "Suspension",
+      "salary": 3800,
+      "phone": "0170000003",
+      "address": "22 Lakeside Ave, Lucerne",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Kathryn",
+      "categories": [
+        "service",
+        "bar"
+      ],
+      "contract": "monthly",
+      "workload": 100,
+      "createdAt": "2024-01-07T00:00:00Z"
+    },
+    {
+      "id": "emp4",
+      "name": "Eleanor Pena",
+      "email": "eleanor@example.com",
+      "department": "Office",
+      "designation": "Receptionist",
+      "employmentType": "Part time",
+      "status": "Active",
+      "salary": 2600,
+      "phone": "0170000004",
+      "address": "88 Marktplatz, Basel",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Eleanor",
+      "categories": [
+        "office"
+      ],
+      "contract": "hourly",
+      "workload": 50,
+      "createdAt": "2024-01-08T00:00:00Z"
+    },
+    {
+      "id": "emp5",
+      "name": "Courtney Henry",
+      "email": "courtney@example.com",
+      "department": "Bar",
+      "designation": "Bar Manager",
+      "employmentType": "Full-time",
+      "status": "Active",
+      "salary": 4600,
+      "phone": "0170000005",
+      "address": "3 Old Town Rd, Bern",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Courtney",
+      "categories": [
+        "bar"
+      ],
+      "contract": "monthly",
+      "workload": 80,
+      "createdAt": "2024-01-09T00:00:00Z"
+    },
+    {
+      "id": "emp6",
+      "name": "Albert Flores",
+      "email": "albert@example.com",
+      "department": "Kitchen",
+      "designation": "Dishwasher",
+      "employmentType": "Hybrid",
+      "status": "Leave",
+      "salary": 2200,
+      "phone": "0170000006",
+      "address": "17 Seestrasse, Zug",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Albert",
+      "categories": [
+        "kitchen",
+        "dishwashing"
+      ],
+      "contract": "hourly",
+      "workload": 60,
+      "createdAt": "2024-01-10T00:00:00Z"
+    },
+    {
+      "id": "emp7",
+      "name": "Bessie Cooper",
+      "email": "bessie@example.com",
+      "department": "Service",
+      "designation": "Runner",
+      "employmentType": "Part time",
+      "status": "Active",
+      "salary": 2100,
+      "phone": "0170000007",
+      "address": "9 Rhine View, Basel",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Bessie",
+      "categories": [
+        "service"
+      ],
+      "contract": "hourly",
+      "workload": 40,
+      "createdAt": "2024-01-11T00:00:00Z"
+    },
+    {
+      "id": "emp8",
+      "name": "Guy Hawkins",
+      "email": "guy@example.com",
+      "department": "Office",
+      "designation": "Commande Clerk",
+      "employmentType": "Full-time",
+      "status": "Resigned",
+      "salary": 3600,
+      "phone": "0170000008",
+      "address": "44 Central Plaza, Winterthur",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Guy",
+      "categories": [
+        "commande"
+      ],
+      "contract": "monthly",
+      "workload": 100,
+      "createdAt": "2024-01-12T00:00:00Z"
+    },
+    {
+      "id": "emp9",
+      "name": "Savannah Nguyen",
+      "email": "savannah@example.com",
+      "department": "Service",
+      "designation": "Head Waiter",
+      "employmentType": "Remote",
+      "status": "Active",
+      "salary": 4400,
+      "phone": "0170000009",
+      "address": "6 Hillside Rd, St. Gallen",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Savannah",
+      "categories": [
+        "service",
+        "office"
+      ],
+      "contract": "monthly",
+      "workload": 100,
+      "createdAt": "2024-01-13T00:00:00Z"
+    },
+    {
+      "id": "emp10",
+      "name": "Ronald Richards",
+      "email": "ronald@example.com",
+      "department": "Kitchen",
+      "designation": "Commis Chef",
+      "employmentType": "Intern",
+      "status": "Active",
+      "salary": 2300,
+      "phone": "0170000010",
+      "address": "31 Vineyard St, Lausanne",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Ronald",
+      "categories": [
+        "kitchen"
+      ],
+      "contract": "hourly",
+      "workload": 100,
+      "createdAt": "2024-01-14T00:00:00Z"
+    },
+    {
+      "id": "emp11",
+      "name": "Cameron Williamson",
+      "email": "cameron@example.com",
+      "department": "Bar",
+      "designation": "Cocktail Specialist",
+      "employmentType": "Full-time",
+      "status": "Active",
+      "salary": 3900,
+      "phone": "0170000011",
+      "address": "77 Harbor Way, Geneva",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Cameron",
+      "categories": [
+        "bar"
+      ],
+      "contract": "monthly",
+      "workload": 100,
+      "createdAt": "2024-01-15T00:00:00Z"
+    },
+    {
+      "id": "empmr65r5q22847",
+      "createdAt": "2026-07-04T09:26:35.450Z",
+      "name": "asASasASA",
+      "email": "SasAS@gmail.com",
+      "department": "Service",
+      "designation": "SasASas",
+      "employmentType": "Full-time",
+      "status": "Active",
+      "salary": 0,
+      "phone": "",
+      "address": "",
+      "avatar": "",
+      "categories": [
+    {
+      "id": "service",
+      "name": "Service",
+      "description": "Front-of-house dining service",
+      "defaultRate": 28,
+      "maxShifts": 10,
+      "sub": ["Runner", "Chef de Rang", "Commis"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "bar",
+      "name": "Bar",
+      "description": "Drinks, cocktails and bar service",
+      "defaultRate": 29,
+      "maxShifts": 8,
+      "sub": ["Cocktails", "Service Bar"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "description": "Food preparation and cooking",
+      "defaultRate": 30,
+      "maxShifts": 10,
+      "sub": ["Grill", "Entremetier", "Garde Manger"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "dishwashing",
+      "name": "Dishwashing",
+      "description": "Kitchen cleaning and dish service",
+      "defaultRate": 24,
+      "maxShifts": 8,
+      "sub": [],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "office",
+      "name": "Office",
+      "description": "Administration and reception",
+      "defaultRate": 26,
+      "maxShifts": 6,
+      "sub": ["Admin", "Reception"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+      "contract": "monthly",
+      "workload": 100
+    },
+    {
+      "id": "empmr660vq84339",
+      "createdAt": "2026-07-04T09:34:09.056Z",
+      "name": "fsdfsdfdsf",
+      "email": "sdfsdfsdfsdfds@gmail.com",
+      "department": "Service",
+      "designation": "sdfsdfsdfsd",
+      "employmentType": "Full-time",
+      "status": "Active",
+      "salary": 100,
+      "phone": "rhgdgdfg",
+      "address": "dfgdfgdfgdfgfd",
+      "avatar": "",
+      "categories": [
+    {
+      "id": "service",
+      "name": "Service",
+      "description": "Front-of-house dining service",
+      "defaultRate": 28,
+      "maxShifts": 10,
+      "sub": ["Runner", "Chef de Rang", "Commis"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "bar",
+      "name": "Bar",
+      "description": "Drinks, cocktails and bar service",
+      "defaultRate": 29,
+      "maxShifts": 8,
+      "sub": ["Cocktails", "Service Bar"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "description": "Food preparation and cooking",
+      "defaultRate": 30,
+      "maxShifts": 10,
+      "sub": ["Grill", "Entremetier", "Garde Manger"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "dishwashing",
+      "name": "Dishwashing",
+      "description": "Kitchen cleaning and dish service",
+      "defaultRate": 24,
+      "maxShifts": 8,
+      "sub": [],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "office",
+      "name": "Office",
+      "description": "Administration and reception",
+      "defaultRate": 26,
+      "maxShifts": 6,
+      "sub": ["Admin", "Reception"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+      "contract": "monthly",
+      "workload": 20
+    },
+    {
+      "id": "empmr6637ee9720",
+      "createdAt": "2026-07-04T09:35:57.494Z",
+      "name": "sdfdsfsdfsd",
+      "email": "hah@gmail.com",
+      "department": "Bar",
+      "designation": "fdsfsdfsdfds",
+      "employmentType": "Full-time",
+      "status": "Active",
+      "salary": 0,
+      "phone": "sdfsdfsd",
+      "address": "fsdfsdfsdfds",
+      "avatar": "",
+      "categories": [
+    {
+      "id": "service",
+      "name": "Service",
+      "description": "Front-of-house dining service",
+      "defaultRate": 28,
+      "maxShifts": 10,
+      "sub": ["Runner", "Chef de Rang", "Commis"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "bar",
+      "name": "Bar",
+      "description": "Drinks, cocktails and bar service",
+      "defaultRate": 29,
+      "maxShifts": 8,
+      "sub": ["Cocktails", "Service Bar"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "description": "Food preparation and cooking",
+      "defaultRate": 30,
+      "maxShifts": 10,
+      "sub": ["Grill", "Entremetier", "Garde Manger"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "dishwashing",
+      "name": "Dishwashing",
+      "description": "Kitchen cleaning and dish service",
+      "defaultRate": 24,
+      "maxShifts": 8,
+      "sub": [],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "office",
+      "name": "Office",
+      "description": "Administration and reception",
+      "defaultRate": 26,
+      "maxShifts": 6,
+      "sub": ["Admin", "Reception"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+      "contract": "monthly",
+      "workload": 100
+    }
+  ],
+  "categories": [
+    {
+      "id": "service",
+      "name": "Service",
+      "description": "Front-of-house dining service",
+      "defaultRate": 28,
+      "maxShifts": 10,
+      "sub": ["Runner", "Chef de Rang", "Commis"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "bar",
+      "name": "Bar",
+      "description": "Drinks, cocktails and bar service",
+      "defaultRate": 29,
+      "maxShifts": 8,
+      "sub": ["Cocktails", "Service Bar"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "description": "Food preparation and cooking",
+      "defaultRate": 30,
+      "maxShifts": 10,
+      "sub": ["Grill", "Entremetier", "Garde Manger"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "dishwashing",
+      "name": "Dishwashing",
+      "description": "Kitchen cleaning and dish service",
+      "defaultRate": 24,
+      "maxShifts": 8,
+      "sub": [],
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "office",
+      "name": "Office",
+      "description": "Administration and reception",
+      "defaultRate": 26,
+      "maxShifts": 6,
+      "sub": ["Admin", "Reception"],
+      "createdAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "availability": [
+    {
+      "id": "avail1",
+      "employeeId": "emp1",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "23:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "23:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "15:00",
+            "end": "23:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "15:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail2",
+      "employeeId": "emp2",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "17:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "17:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "17:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "17:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "17:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail5",
+      "employeeId": "emp5",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "12:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": true,
+          "timeRange": {
+            "start": "12:00",
+            "end": "22:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail4",
+      "employeeId": "emp4",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "14:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "14:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "14:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "14:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "14:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail6",
+      "employeeId": "emp6",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail7",
+      "employeeId": "emp7",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail8",
+      "employeeId": "emp8",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "16:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "16:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "16:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "16:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "08:00",
+            "end": "16:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail9",
+      "employeeId": "emp9",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail10",
+      "employeeId": "emp10",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "18:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "18:00"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "18:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "18:00"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "09:00",
+            "end": "18:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail11",
+      "employeeId": "emp11",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "16:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "23:59"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": true,
+          "timeRange": {
+            "start": "14:00",
+            "end": "22:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "avail12",
+      "employeeId": "emp12",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeRange": {
+            "start": "12:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Tuesday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Wednesday",
+          "available": true,
+          "timeRange": {
+            "start": "12:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Thursday",
+          "available": false,
+          "timeRange": {
+            "start": "",
+            "end": ""
+          }
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeRange": {
+            "start": "12:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Saturday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "22:00"
+          }
+        },
+        {
+          "day": "Sunday",
+          "available": true,
+          "timeRange": {
+            "start": "10:00",
+            "end": "18:00"
+          }
+        }
+      ]
+    }
+  ],
+  "plans": [
+    {
+      "id": "plan1",
+      "weekNumber": 1,
+      "month": "2026-11",
+      "dateRange": {
+        "start": "2026-11-03",
+        "end": "2026-11-09"
+      },
+      "status": "approved",
+      "manpower": [
+        {
+          "day": "Monday",
+          "shiftType": "Lunch",
+          "categoryId": "service",
+          "required": 3
+        },
+        {
+          "day": "Monday",
+          "shiftType": "Dinner",
+          "categoryId": "service",
+          "required": 2
+        },
+        {
+          "day": "Friday",
+          "shiftType": "Dinner",
+          "categoryId": "bar",
+          "required": 2
+        }
+      ],
+      "assignments": [
+        {
+          "employeeId": "emp1",
+          "categoryId": "service",
+          "shifts": [
+            {
+              "day": "Monday",
+              "date": "2026-11-03",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "15:00",
+              "hours": 5
+            },
+            {
+              "day": "Tuesday",
+              "date": "2026-11-04",
+              "shiftType": "Dinner",
+              "startTime": "15:00",
+              "endTime": "23:00",
+              "hours": 8
+            }
+          ],
+          "totalHours": 13
+        },
+        {
+          "employeeId": "emp9",
+          "categoryId": "service",
+          "shifts": [
+            {
+              "day": "Monday",
+              "date": "2026-11-03",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "15:00",
+              "hours": 5
+            }
+          ],
+          "totalHours": 5
+        }
+      ],
+      "violations": [],
+      "createdBy": "admin1",
+      "createdAt": "2026-10-28T10:00:00Z",
+      "submittedAt": "2026-10-29T15:00:00Z",
+      "approvedBy": "admin1",
+      "approvedAt": "2026-10-30T09:00:00Z"
+    },
+    {
+      "id": "plan2",
+      "weekNumber": 2,
+      "month": "2026-11",
+      "dateRange": {
+        "start": "2026-11-10",
+        "end": "2026-11-16"
+      },
+      "status": "submitted",
+      "manpower": [
+        {
+          "day": "Monday",
+          "shiftType": "Lunch",
+          "categoryId": "service",
+          "required": 2
+        },
+        {
+          "day": "Saturday",
+          "shiftType": "Dinner",
+          "categoryId": "kitchen",
+          "required": 3
+        }
+      ],
+      "assignments": [
+        {
+          "employeeId": "emp2",
+          "categoryId": "kitchen",
+          "shifts": [
+            {
+              "day": "Saturday",
+              "date": "2026-11-15",
+              "shiftType": "Dinner",
+              "startTime": "15:00",
+              "endTime": "23:00",
+              "hours": 8
+            }
+          ],
+          "totalHours": 8
+        }
+      ],
+      "violations": [],
+      "createdBy": "admin1",
+      "createdAt": "2026-11-04T10:00:00Z",
+      "submittedAt": "2026-11-05T15:00:00Z",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "plan3",
+      "weekNumber": 3,
+      "month": "2026-11",
+      "dateRange": {
+        "start": "2026-11-17",
+        "end": "2026-11-23"
+      },
+      "status": "approved",
+      "manpower": [
+        {
+          "day": "Monday",
+          "shiftType": "Lunch",
+          "categoryId": "service",
+          "required": 3
+        },
+        {
+          "day": "Monday",
+          "shiftType": "Dinner",
+          "categoryId": "service",
+          "required": 2
+        },
+        {
+          "day": "Tuesday",
+          "shiftType": "Dinner",
+          "categoryId": "kitchen",
+          "required": 2
+        }
+      ],
+      "assignments": [],
+      "violations": [],
+      "createdBy": "admin1",
+      "createdAt": "2026-11-11T10:00:00Z",
+      "submittedAt": "2026-07-04T04:24:07.466Z",
+      "approvedBy": "admin1",
+      "approvedAt": "2026-07-04T04:24:09.625Z"
+    },
+    {
+      "id": "plamr5uxdhl1138",
+      "createdAt": "2026-07-04T04:23:29.664Z",
+      "weekNumber": 1,
+      "month": "2026-07",
+      "dateRange": {
+        "start": "2026-07-04",
+        "end": "2026-07-10"
+      },
+      "status": "approved",
+      "manpower": [
+        {
+          "day": "Monday",
+          "shiftType": "Lunch",
+          "categoryId": "bar",
+          "required": 5
+        },
+        {
+          "day": "Thursday",
+          "shiftType": "Breakfast",
+          "categoryId": "office",
+          "required": 2
+        }
+      ],
+      "assignments": [
+        {
+          "employeeId": "emp1",
+          "categoryId": "service",
+          "shifts": [
+            {
+              "day": "Tuesday",
+              "date": "",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "hours": 8
+            },
+            {
+              "day": "Thursday",
+              "date": "",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "hours": 8
+            },
+            {
+              "day": "Friday",
+              "date": "",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "hours": 8
+            },
+            {
+              "day": "Saturday",
+              "date": "",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "hours": 8
+            }
+          ],
+          "totalHours": 32
+        },
+        {
+          "employeeId": "emp2",
+          "categoryId": "kitchen",
+          "shifts": [
+            {
+              "day": "Thursday",
+              "date": "",
+              "shiftType": "Lunch",
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "hours": 8
+            }
+          ],
+          "totalHours": 8
+        }
+      ],
+      "violations": [],
+      "createdBy": "admin1",
+      "submittedAt": "2026-07-04T04:23:29.665Z",
+      "approvedBy": "admin1",
+      "approvedAt": "2026-07-04T04:23:42.265Z"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "appr1",
+      "planId": "plan2",
+      "type": "swap_request",
+      "status": "approved",
+      "submittedBy": "emp2",
+      "submittedDate": "2026-11-06T09:00:00Z",
+      "reviewedBy": "admin1",
+      "reviewDate": "2026-07-04T08:03:38.803Z",
+      "comments": "",
+      "swapData": {
+        "fromEmployeeId": "emp2",
+        "toEmployeeId": "emp5",
+        "fromShift": {
+          "day": "Fri, Nov 21",
+          "time": "10:00 - 18:00",
+          "category": "Kitchen"
+        },
+        "toShift": {
+          "day": "Fri, Nov 21",
+          "time": "18:00 - 02:00",
+          "category": "Kitchen"
+        },
+        "ruleCheck": "pass",
+        "ruleNote": null
+      }
+    },
+    {
+      "id": "appr2",
+      "planId": "plan2",
+      "type": "swap_request",
+      "status": "rejected",
+      "submittedBy": "emp9",
+      "submittedDate": "2026-11-06T12:00:00Z",
+      "reviewedBy": "admin1",
+      "reviewDate": "2026-07-04T08:03:43.556Z",
+      "comments": "",
+      "swapData": {
+        "fromEmployeeId": "emp9",
+        "toEmployeeId": "emp10",
+        "fromShift": {
+          "day": "Sat, Nov 22",
+          "time": "14:00 - 23:00",
+          "category": "Service"
+        },
+        "toShift": {
+          "day": "Sun, Nov 23",
+          "time": "10:00 - 18:00",
+          "category": "Service"
+        },
+        "ruleCheck": "fail",
+        "ruleNote": "Fails L-GAV minimum 11h rest period. Employee would have only 9h rest."
+      }
+    },
+    {
+      "id": "appr3",
+      "planId": "plan1",
+      "type": "swap_request",
+      "status": "approved",
+      "submittedBy": "emp5",
+      "submittedDate": "2026-11-01T09:00:00Z",
+      "reviewedBy": "admin1",
+      "reviewDate": "2026-11-01T14:00:00Z",
+      "comments": "Approved — coverage OK.",
+      "swapData": {
+        "fromEmployeeId": "emp5",
+        "toEmployeeId": "emp11",
+        "fromShift": {
+          "day": "Mon, Nov 17",
+          "time": "10:00 - 15:00",
+          "category": "Bar"
+        },
+        "toShift": {
+          "day": "Mon, Nov 17",
+          "time": "15:00 - 23:00",
+          "category": "Bar"
+        },
+        "ruleCheck": "pass",
+        "ruleNote": null
+      }
+    }
+  ],
+  "reports": [
+    {
+      "id": "rep1",
+      "employeeId": "emp2",
+      "month": "2026-11",
+      "scheduled": 160,
+      "worked": 168,
+      "overtime": 8,
+      "due": 0,
+      "wage": 4200
+    },
+    {
+      "id": "rep2",
+      "employeeId": "emp5",
+      "month": "2026-11",
+      "scheduled": 120,
+      "worked": 110,
+      "overtime": 0,
+      "due": 10,
+      "wage": 3000
+    },
+    {
+      "id": "rep3",
+      "employeeId": "emp6",
+      "month": "2026-11",
+      "scheduled": 80,
+      "worked": 80,
+      "overtime": 0,
+      "due": 0,
+      "wage": 2000
+    },
+    {
+      "id": "rep4",
+      "employeeId": "emp9",
+      "month": "2026-11",
+      "scheduled": 160,
+      "worked": 172,
+      "overtime": 12,
+      "due": 0,
+      "wage": 4400
+    },
+    {
+      "id": "rep5",
+      "employeeId": "emp10",
+      "month": "2026-11",
+      "scheduled": 160,
+      "worked": 155,
+      "overtime": 0,
+      "due": 5,
+      "wage": 3950
+    }
+  ],
+  "workload-sheets": [
+    {
+      "id": "wl1",
+      "month": "2026-07",
+      "weekNumber": 1,
+      "dateRange": { "start": "2026-06-29", "end": "2026-07-05" },
+      "label": "Week 1",
+      "status": "published",
+      "entries": [
+        { "day": "Monday", "shiftType": "Lunch", "categoryId": "service", "categoryName": "Service", "required": 3 },
+        { "day": "Monday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Monday", "shiftType": "Lunch", "categoryId": "bar", "categoryName": "Bar", "required": 2 },
+        { "day": "Monday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 3 },
+        { "day": "Tuesday", "shiftType": "Lunch", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Tuesday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Wednesday", "shiftType": "Lunch", "categoryId": "service", "categoryName": "Service", "required": 3 },
+        { "day": "Wednesday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 2 },
+        { "day": "Thursday", "shiftType": "Lunch", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Thursday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 3 },
+        { "day": "Friday", "shiftType": "Lunch", "categoryId": "bar", "categoryName": "Bar", "required": 2 },
+        { "day": "Friday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 3 },
+        { "day": "Saturday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 4 },
+        { "day": "Sunday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 2 }
+      ],
+      "createdAt": "2026-06-25T10:00:00Z",
+      "updatedAt": "2026-06-28T15:00:00Z"
+    },
+    {
+      "id": "wl2",
+      "month": "2026-07",
+      "weekNumber": 2,
+      "dateRange": { "start": "2026-07-06", "end": "2026-07-12" },
+      "label": "Week 2",
+      "status": "draft",
+      "entries": [
+        { "day": "Monday", "shiftType": "Lunch", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Monday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 2 },
+        { "day": "Tuesday", "shiftType": "Lunch", "categoryId": "bar", "categoryName": "Bar", "required": 1 },
+        { "day": "Tuesday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 2 },
+        { "day": "Friday", "shiftType": "Dinner", "categoryId": "service", "categoryName": "Service", "required": 3 },
+        { "day": "Friday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 2 },
+        { "day": "Saturday", "shiftType": "Dinner", "categoryId": "bar", "categoryName": "Bar", "required": 3 }
+      ],
+      "createdAt": "2026-07-01T10:00:00Z",
+      "updatedAt": "2026-07-02T12:00:00Z"
+    }
+  ],
+  "settings": {
+    "id": "1",
+    "maxDailyHours": 10,
+    "maxWeeklyHours": 50,
+    "minRestHours": 11,
+    "breakAfterHours": 5.5,
+    "breakMinutes": 30,
+    "notifications": {
+      "email": true,
+      "push": true,
+      "digest": false
+    },
+    "sessionTimeoutMinutes": 30
+  }
+}

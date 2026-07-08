@@ -1,0 +1,310 @@
+
+> frontend-2@0.0.0 lint
+> oxlint
+
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+     ,-[src/components/ui/form.tsx:163:3]
+ 162 | export {
+ 163 |   useFormField,
+     :   ^^^^^^^^^^^^
+ 164 |   Form,
+     `----
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+     ,-[src/components/ui/navigation-menu.tsx:111:3]
+ 110 | export {
+ 111 |   navigationMenuTriggerStyle,
+     :   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 112 |   NavigationMenu,
+     `----
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+    ,-[src/components/ui/toggle.tsx:42:18]
+ 41 | 
+ 42 | export { Toggle, toggleVariants };
+    :                  ^^^^^^^^^^^^^^
+    `----
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+     ,-[src/components/ui/sidebar.tsx:750:3]
+ 749 |   SidebarTrigger,
+ 750 |   useSidebar,
+     :   ^^^^^^^^^^
+ 751 | };
+     `----
+
+  ! eslint(no-unused-vars): Variable 'isLoading' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/schedule-detail.page.tsx:19:5]
+ 18 |     state,
+ 19 |     isLoading,
+    :     ^^^^|^^^^
+    :         `-- 'isLoading' is declared here
+ 20 |     approveSchedule,
+    `----
+  help: Consider removing this declaration.
+
+  x react-hooks(rules-of-hooks): React Hook "useSchedulePlannerById" is called conditionally. React Hooks must be called in the exact same order in every component render.
+    ,-[src/pages/schedule-detail.page.tsx:25:7]
+ 24 |     applyFix
+ 25 |   } = useSchedulePlannerById(id);
+    :       ^^^^^^^^^^^^^|^^^^^^^^^^^^
+    :                    `-- This Hook call is not reachable on every render path.
+ 26 | 
+    `----
+  help: Move the Hook call before the condition, or call it unconditionally and branch inside the Hook/effect instead.
+
+  x react-hooks(rules-of-hooks): React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render.
+    ,-[src/pages/schedule-detail.page.tsx:31:49]
+ 30 |   // Modals state
+ 31 |   const [showDemandModal, setShowDemandModal] = useState(false);
+    :                                                 ^^^^^^^|^^^^^^^
+    :                                                        `-- This Hook call is not reachable on every render path.
+ 32 |   const [assignData, setAssignData] = useState<{ violId: string | null, dayIdx: number, fnKey?: string, needLabel?: string } | null>(null);
+    `----
+  help: Move the Hook call before the condition, or call it unconditionally and branch inside the Hook/effect instead.
+
+  x react-hooks(rules-of-hooks): React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render.
+    ,-[src/pages/schedule-detail.page.tsx:32:39]
+ 31 |   const [showDemandModal, setShowDemandModal] = useState(false);
+ 32 |   const [assignData, setAssignData] = useState<{ violId: string | null, dayIdx: number, fnKey?: string, needLabel?: string } | null>(null);
+    :                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    :                                                                                         `-- This Hook call is not reachable on every render path.
+ 33 |   const [selectedShift, setSelectedShift] = useState<{ staff: Staff, dayIdx: number, shift: Shift } | null>(null);
+    `----
+  help: Move the Hook call before the condition, or call it unconditionally and branch inside the Hook/effect instead.
+
+  x react-hooks(rules-of-hooks): React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render.
+    ,-[src/pages/schedule-detail.page.tsx:33:45]
+ 32 |   const [assignData, setAssignData] = useState<{ violId: string | null, dayIdx: number, fnKey?: string, needLabel?: string } | null>(null);
+ 33 |   const [selectedShift, setSelectedShift] = useState<{ staff: Staff, dayIdx: number, shift: Shift } | null>(null);
+    :                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    :                                                                               `-- This Hook call is not reachable on every render path.
+ 34 | 
+    `----
+  help: Move the Hook call before the condition, or call it unconditionally and branch inside the Hook/effect instead.
+
+  x react-hooks(rules-of-hooks): React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render.
+    ,-[src/pages/schedule-detail.page.tsx:46:21]
+ 45 |       // Compute Cost
+ 46 | ,->   const totalCost = useMemo(() => {
+ 47 | |       if (!state?.grid) return 0;
+ 48 | |       let cost = 0;
+ 49 | |       STAFF.forEach(st => {
+ 50 | |         for(let d=0; d<7; d++) {
+ 51 | |           const shifts = state.grid[`${st.id}-${d}`] || [];
+ 52 | |           shifts.forEach(s => {
+ 53 | |             cost += s.durationHours * st.hrSalary;
+ 54 | |           });
+ 55 | |         }
+ 56 | |       });
+ 57 | |       return cost;
+ 58 | |->   }, [state?.grid]);
+    : `---- This Hook call is not reachable on every render path.
+ 59 |     
+    `----
+  help: Move the Hook call before the condition, or call it unconditionally and branch inside the Hook/effect instead.
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+    ,-[src/components/ui/button.tsx:49:18]
+ 48 | 
+ 49 | export { Button, buttonVariants };
+    :                  ^^^^^^^^^^^^^^
+    `----
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+    ,-[src/components/ui/badge.tsx:32:17]
+ 31 | 
+ 32 | export { Badge, badgeVariants };
+    :                 ^^^^^^^^^^^^^
+    `----
+
+  ! react-hooks(exhaustive-deps): React hook useMemo depends on `employees`, which changes every render
+    ,-[src/pages/reports.page.tsx:52:7]
+ 46 |   
+ 47 |   const employees = reportsData?.data?.employees ?? [];
+    :         ^^^^|^^^^
+    :             `-- `employees` is declared here
+ 48 | 
+ 49 |   const filteredEmployees = useMemo(() => {
+ 50 |     if (!nameFilter) return employees;
+ 51 |     return employees.filter(e => e.name.toLowerCase().includes(nameFilter.toLowerCase()));
+ 52 |   }, [employees, nameFilter]);
+    :       ^^^^|^^^^
+    :           `-- it will always cause this hook to re-evaluate
+ 53 | 
+    `----
+  help: Try memoizing this variable with `useRef` or `useCallback`.
+
+  ! eslint(no-unused-vars): Variable 'categories' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/components/employee/modal-components.tsx:96:39]
+ 95 |     if (editing && open) {
+ 96 |       const { id: _id, createdAt: _c, categories, isActive, ...rest } = editing;
+    :                                       ^^^^^|^^^^
+    :                                            `-- 'categories' is declared here
+ 97 |       setForm({
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'isActive' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/components/employee/modal-components.tsx:96:51]
+ 95 |     if (editing && open) {
+ 96 |       const { id: _id, createdAt: _c, categories, isActive, ...rest } = editing;
+    :                                                   ^^^^|^^^
+    :                                                       `-- 'isActive' is declared here
+ 97 |       setForm({
+    `----
+  help: Consider removing this declaration.
+
+  ! react-hooks(exhaustive-deps): React Hook useMemo has unnecessary dependency: isActiveFilter
+    ,-[src/pages/employees-page.tsx:48:6]
+ 47 |     setCursorStack([]);
+ 48 |   }, [debouncedSearch, departmentFilter, isActiveFilter]);
+    :      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 49 | 
+    `----
+  help: Either include it or remove the dependency array.
+
+  ! react-hooks(exhaustive-deps): React Hook useMemo has unnecessary dependency: debouncedSearch
+    ,-[src/pages/employees-page.tsx:48:6]
+ 47 |     setCursorStack([]);
+ 48 |   }, [debouncedSearch, departmentFilter, isActiveFilter]);
+    :      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 49 | 
+    `----
+  help: Either include it or remove the dependency array.
+
+  ! react-hooks(exhaustive-deps): React Hook useMemo has unnecessary dependency: departmentFilter
+    ,-[src/pages/employees-page.tsx:48:6]
+ 47 |     setCursorStack([]);
+ 48 |   }, [debouncedSearch, departmentFilter, isActiveFilter]);
+    :      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 49 | 
+    `----
+  help: Either include it or remove the dependency array.
+
+  ! react-hooks(exhaustive-deps): React hook useMemo depends on `employees`, which changes every render
+    ,-[src/pages/employees-page.tsx:79:7]
+ 67 | 
+ 68 |   const employees = data?.data?.users ?? [];
+    :         ^^^^|^^^^
+    :             `-- `employees` is declared here
+ 69 |   const totalCount = data?.data?.counts?.active ?? 0;
+ 70 |   
+ 71 |   const hasNextPage = data?.meta?.pagination?.hasNextPage ?? false;
+ 72 |   const nextCursor = data?.meta?.pagination?.nextCursor ?? null;
+ 73 |   const page = cursorStack.length + 1;
+ 74 | 
+ 75 |   // Local filtering for department since it's not a backend parameter
+ 76 |   const filteredEmployees = useMemo(() => {
+ 77 |     if (departmentFilter === 'all') return employees;
+ 78 |     return employees.filter(emp => emp.department === departmentFilter);
+ 79 |   }, [employees, departmentFilter]);
+    :       ^^^^|^^^^
+    :           `-- it will always cause this hook to re-evaluate
+ 80 | 
+    `----
+  help: Try memoizing this variable with `useRef` or `useCallback`.
+
+  ! react-hooks(exhaustive-deps): React Hook useCallback has a missing dependency: 'handleCloseModal'
+     ,-[src/pages/employees-page.tsx:125:5]
+ 118 |           { id: editingEmployee.id, data: formData },
+ 119 |           { onSuccess: handleCloseModal }
+     :                        ^^^^^^^^|^^^^^^^
+     :                                `-- useCallback uses `handleCloseModal` here
+ 120 |         );
+ 121 |       } else {
+ 122 |         createMut.mutate(formData, { onSuccess: handleCloseModal });
+ 123 |       }
+ 124 |     },
+ 125 |     [editingEmployee, updateMut, createMut]
+     :     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 126 |   );
+     `----
+  help: Either include it or remove the dependency array.
+
+  ! eslint(no-unused-vars): Identifier 'Plane' is imported but never used.
+   ,-[src/pages/leaves-page.tsx:2:64]
+ 1 | import { useState } from "react";
+ 2 | import { CheckCircle2, XCircle, Clock, CalendarRange, Loader2, Plane } from "lucide-react";
+   :                                                                ^^|^^
+   :                                                                  `-- 'Plane' is imported here
+ 3 | import { format, parseISO } from "date-fns";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[src/pages/leaves-page.tsx:22:12]
+ 21 |     return format(parseISO(isoStr), "MMM d, yyyy");
+ 22 |   } catch (e) {
+    :            |
+    :            `-- 'e' is declared here
+ 23 |     return isoStr;
+    `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[src/pages/leaves-page.tsx:32:12]
+ 31 |     return `${format(start, "EEE, MMM d")} - ${format(end, "EEE, MMM d, yyyy")}`;
+ 32 |   } catch (e) {
+    :            |
+    :            `-- 'e' is declared here
+ 33 |     return "";
+    `----
+  help: Consider handling this error.
+
+  ! react-hooks(exhaustive-deps): React hook useMemo depends on `weeks`, which changes every render
+     ,-[src/pages/DemandPage.tsx:387:7]
+ 375 |   const gridData = (gridRes as any)?.data || gridRes; // Handle unwrapped data or envelope just in case
+ 376 |   const weeks = gridData?.weeks || [];
+     :         ^^|^^
+     :           `-- `weeks` is declared here
+ 377 |   const currentWeekMeta = gridData?.currentWeek;
+ 378 | 
+ 379 |   // Derive target start for creation modal
+ 380 |   const nextTargetStart = useMemo(() => {
+ 381 |     if (weeks.length === 0) {
+ 382 |       return startOfWeek(new Date());
+ 383 |     } else {
+ 384 |       const lastWeekStr = weeks[weeks.length - 1].weekStartDate;
+ 385 |       return new Date(new Date(lastWeekStr).getTime() + 7 * MS_DAY);
+ 386 |     }
+ 387 |   }, [weeks]);
+     :       ^^|^^
+     :         `-- it will always cause this hook to re-evaluate
+ 388 | 
+     `----
+  help: Try memoizing this variable with `useRef` or `useCallback`.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[src/pages/approvals.page.tsx:27:12]
+ 26 |     return format(parseISO(isoStr), "MMM d, h:mm a");
+ 27 |   } catch (e) {
+    :            |
+    :            `-- 'e' is declared here
+ 28 |     return isoStr;
+    `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[src/pages/approvals.page.tsx:37:12]
+ 36 |     return `${format(start, "EEE, MMM d")} · ${format(start, "h:mm a")} - ${format(end, "h:mm a")}`;
+ 37 |   } catch (e) {
+    :            |
+    :            `-- 'e' is declared here
+ 38 |     return "";
+    `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Variable 'password' is declared but never used. Unused variables should start with a '_'.
+    ,-[server.mjs:74:11]
+ 73 | function publicUser(u) {
+ 74 |   const { password, ...rest } = u;
+    :           ^^^^|^^^
+    :               `-- 'password' is declared here
+ 75 |   return rest;
+    `----
+  help: Consider removing this declaration.
+
+Found 22 warnings and 5 errors.
+Finished in 45ms on 134 files with 103 rules using 8 threads.

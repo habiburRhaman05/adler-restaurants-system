@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -rn \"\\\\.\\\\./lib/plan-data\\\\|\\\\.\\\\./\\\\.\\\\./lib\" src/components/plans/*.tsx)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

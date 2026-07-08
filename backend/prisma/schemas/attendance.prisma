@@ -1,0 +1,45 @@
+enum TimeEntryStatus {
+  ACTIVE
+  ON_BREAK
+  COMPLETED
+}
+
+model TimeEntry {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Optional link to the roster shift this entry fulfils.
+  shiftId String?
+  shift   Shift?  @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+
+  clockInAt  DateTime
+  clockOutAt DateTime?
+
+  // Break tracking: while on break, breakStartedAt is set; accumulated
+  // completed break time lands in breakMinutes.
+  breakStartedAt DateTime?
+  breakMinutes   Int       @default(0)
+
+  // Optional geo/context captured at clock-in.
+  latitude  Decimal? @db.Decimal(9, 6)
+  longitude Decimal? @db.Decimal(9, 6)
+  location  String?
+
+  status TimeEntryStatus @default(ACTIVE)
+
+  // Derived on clock-out (kept for cheap reporting).
+  workedMinutes   Int?
+  lateMinutes     Int?
+  overtimeMinutes Int?
+
+  note String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, clockInAt])
+  @@index([userId, status])
+  @@index([shiftId])
+  @@map("time_entries")
+}

@@ -1,0 +1,9 @@
+# Build output & local artifacts — Vercel builds fresh from source.
+dist
+.env
+*.log
+
+# Docs & local tooling not needed at runtime.
+API_Doc.md
+implimated.md
+Readme.md

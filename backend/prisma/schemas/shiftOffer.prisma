@@ -1,0 +1,55 @@
+model ShiftOffer {
+  id          String  @id @default(cuid())
+  jobTitle    String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  startTime   DateTime
+  endTime     DateTime
+  hourlyPrice Decimal  @db.Decimal(10, 2)
+  description String?
+
+  createdById String?
+  createdBy   Admin?  @relation("ShiftOfferCreatedBy", fields: [createdById], references: [id])
+
+  notifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  responses ShiftOfferResponse[]
+
+  swapsAsInitiatorShift ShiftSwapRequest[] @relation("ShiftSwapInitiatorShift")
+  swapsAsRecipientShift ShiftSwapRequest[] @relation("ShiftSwapRecipientShift")
+
+  @@index([categoryId])
+  @@index([startTime])
+  @@index([notifiedAt])
+  @@map("shift_offers")
+}
+
+model ShiftOfferResponse {
+  id           String     @id @default(cuid())
+  shiftOfferId String
+  shiftOffer   ShiftOffer @relation(fields: [shiftOfferId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status      ShiftResponseStatus
+  respondedAt DateTime            @default(now())
+
+  // Admin approval layer: a staff ACCEPT is a volunteer offer; the admin then
+  // confirms who actually works the shift. Only APPROVED responses count as
+  // available/confirmed workers.
+  approvalStatus ShiftApprovalStatus @default(PENDING)
+  approvedById   String?
+  approvedBy     Admin?              @relation("ResponseApprovedBy", fields: [approvedById], references: [id])
+  approvedAt     DateTime?
+  approvalNote   String?
+
+  @@unique([shiftOfferId, userId])
+  @@index([userId])
+  @@index([shiftOfferId])
+  @@index([status])
+  @@index([approvalStatus])
+  @@map("shift_offer_responses")
+}

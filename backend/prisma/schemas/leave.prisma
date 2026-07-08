@@ -1,0 +1,42 @@
+enum LeaveType {
+  VACATION
+  SICK
+  PERSONAL
+  OTHER
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model LeaveRequest {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  leaveType LeaveType
+  startDate DateTime  @db.Date
+  endDate   DateTime  @db.Date
+  reason    String
+
+  status    LeaveStatus @default(PENDING)
+  adminNote String?
+
+  reviewedById String?
+  reviewedBy   Admin?    @relation("LeaveReviewedBy", fields: [reviewedById], references: [id])
+  reviewedAt   DateTime?
+
+  // Roster shifts auto-cancelled when this leave was approved.
+  affectedShifts Shift[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@map("leave_requests")
+}

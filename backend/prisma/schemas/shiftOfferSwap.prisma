@@ -1,0 +1,35 @@
+// A request by one employee to swap their confirmed (admin-approved) shift with
+// another employee's confirmed shift. Routed to the admin for approval. Built on
+// ShiftOffer (the functional shift-board model), distinct from the deferred
+// WeeklyPlan-based SwapRequest in shiftSwap.prisma.
+model ShiftSwapRequest {
+  id String @id @default(cuid())
+
+  initiatorUserId  String
+  initiatorUser    User       @relation("ShiftSwapInitiatorUser", fields: [initiatorUserId], references: [id], onDelete: Cascade)
+  initiatorShiftId String
+  initiatorShift   ShiftOffer @relation("ShiftSwapInitiatorShift", fields: [initiatorShiftId], references: [id], onDelete: Cascade)
+
+  recipientUserId  String
+  recipientUser    User       @relation("ShiftSwapRecipientUser", fields: [recipientUserId], references: [id], onDelete: Cascade)
+  recipientShiftId String
+  recipientShift   ShiftOffer @relation("ShiftSwapRecipientShift", fields: [recipientShiftId], references: [id], onDelete: Cascade)
+
+  status ShiftSwapStatus @default(PENDING)
+  reason String?
+
+  reviewedById String?
+  reviewedBy   Admin?    @relation("ShiftSwapReviewedBy", fields: [reviewedById], references: [id])
+  reviewedAt   DateTime?
+  adminNote    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([initiatorUserId])
+  @@index([recipientUserId])
+  @@index([initiatorShiftId])
+  @@index([recipientShiftId])
+  @@map("shift_swap_requests")
+}

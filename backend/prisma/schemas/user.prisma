@@ -1,0 +1,77 @@
+model User {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  passwordHash       String
+  mustChangePassword Boolean   @default(true)
+  isActive           Boolean   @default(true)
+  lastLoginAt        DateTime?
+
+  name                   String?
+  firstName              String?
+  lastName               String?
+  phone                  String?
+  address                String?
+  department             String?
+  designation            String?
+  employeeType           EmployeeType?
+  contractType           ContractType?
+  workloadPercent        Decimal?      @db.Decimal(5, 2)
+  hourlyRate             Decimal?      @db.Decimal(10, 2)
+  monthlySalary          Decimal?      @db.Decimal(10, 2)
+  contractedHoursMonthly Decimal?      @db.Decimal(6, 2)
+  hireDate               DateTime?
+  deactivatedAt          DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories          UserCategory[]
+  availabilityMonths  AvailabilityMonth[]
+  shifts              Shift[]
+  shiftOfferResponses ShiftOfferResponse[]
+  initiatedShiftSwaps ShiftSwapRequest[]   @relation("ShiftSwapInitiatorUser")
+  receivedShiftSwaps  ShiftSwapRequest[]   @relation("ShiftSwapRecipientUser")
+
+  initiatedSwaps      SwapRequest[]        @relation("SwapInitiator")
+  receivedSwaps       SwapRequest[]        @relation("SwapRecipient")
+  receivedCredentials CredentialDelivery[] @relation("CredentialRecipient")
+
+  notifications Notification[]
+  refreshTokens UserRefreshToken[]
+  timeEntries   TimeEntry[]
+  leaveRequests LeaveRequest[]
+
+  @@index([isActive])
+  @@index([lastName, firstName])
+  @@index([deactivatedAt])
+  @@map("users")
+}
+
+model UserRefreshToken {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  deviceInfo String?
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("user_refresh_tokens")
+}
+
+model CredentialDelivery {
+  id            String                   @id @default(cuid())
+  userId        String
+  user          User                     @relation("CredentialRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  method        CredentialDeliveryMethod
+  deliveredById String?
+  deliveredBy   Admin?                   @relation("DeliveredBy", fields: [deliveredById], references: [id])
+  deliveredAt   DateTime                 @default(now())
+  note          String?
+
+  @@index([userId])
+  @@map("credential_deliveries")
+}

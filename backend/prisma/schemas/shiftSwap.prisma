@@ -1,0 +1,39 @@
+model SwapRequest {
+  id String @id @default(cuid())
+
+  swapType SwapType @default(TARGETED)
+
+  initiatorUserId  String
+  initiatorUser    User   @relation("SwapInitiator", fields: [initiatorUserId], references: [id], onDelete: Cascade)
+  initiatorShiftId String
+  initiatorShift   Shift  @relation("InitiatorShift", fields: [initiatorShiftId], references: [id], onDelete: Cascade)
+
+  recipientUserId  String?
+  recipientUser    User?   @relation("SwapRecipient", fields: [recipientUserId], references: [id], onDelete: Cascade)
+  recipientShiftId String?
+  recipientShift   Shift?  @relation("RecipientShift", fields: [recipientShiftId], references: [id], onDelete: Cascade)
+
+  status               SwapStatus @default(PENDING_RECIPIENT)
+  recipientRespondedAt DateTime?
+
+  ruleCheckResult Json?
+  ruleCheckPassed Boolean?
+  ruleCheckedAt   DateTime?
+
+  approvedById String?
+  approvedBy   Admin?    @relation("SwapAdmin", fields: [approvedById], references: [id])
+  adminReason  String?
+  resolvedAt   DateTime?
+  expiresAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([initiatorUserId])
+  @@index([recipientUserId])
+  @@index([status])
+  @@index([initiatorShiftId])
+  @@index([recipientShiftId])
+  @@index([swapType, status])
+  @@map("swap_requests")
+}

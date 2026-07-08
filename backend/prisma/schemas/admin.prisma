@@ -1,0 +1,42 @@
+model Admin {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  name         String?
+  firstName    String?
+  lastName     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  refreshTokens        AdminRefreshToken[]
+  submittedPlans       WeeklyPlan[]         @relation("PlanSubmittedBy")
+  approvedSwaps        SwapRequest[]        @relation("SwapAdmin")
+  auditLogs            AuditLog[]           @relation("AuditActor")
+  deliveredCredentials CredentialDelivery[] @relation("DeliveredBy")
+  ruleCheckLogs        RuleCheckLog[]       @relation("RuleCheckActor")
+  createdShiftOffers   ShiftOffer[]         @relation("ShiftOfferCreatedBy")
+  approvedResponses    ShiftOfferResponse[] @relation("ResponseApprovedBy")
+  reviewedShiftSwaps   ShiftSwapRequest[]   @relation("ShiftSwapReviewedBy")
+  reviewedLeaves       LeaveRequest[]       @relation("LeaveReviewedBy")
+
+  @@index([isActive])
+  @@index([lastName, firstName])
+  @@map("admins")
+}
+
+model AdminRefreshToken {
+  id         String    @id @default(cuid())
+  adminId    String
+  admin      Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  deviceInfo String?
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([adminId])
+  @@index([expiresAt])
+  @@map("admin_refresh_tokens")
+}
