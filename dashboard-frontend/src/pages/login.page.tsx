@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Mail, Lock, Loader2, ArrowRight, Sparkles, UtensilsCrossed } from 'lucide-react';
@@ -197,13 +198,13 @@ export function LoginPage() {
                     >
                       Password
                     </label>
-                    <button
-                      type="button"
+                    <Link
+                      to="/forgot-password"
                       className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
                       tabIndex={-1}
                     >
                       Forgot password?
-                    </button>
+                    </Link>
                   </div>
                   <div className="relative group">
                     <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 transition-colors duration-200 group-focus-within:text-blue-400" />

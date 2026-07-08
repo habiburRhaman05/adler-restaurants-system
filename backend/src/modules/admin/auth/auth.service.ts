@@ -1,9 +1,12 @@
+import crypto from "crypto";
 import { prisma } from "../../../config/db";
 import { hashPassword, verifyPassword } from "../../../utils/bcrypt";
 import { tokenUtils } from "../../../utils/token";
 import { jwtUtils } from "../../../utils/jwt";
 import { envConfig } from "../../../config/env";
 import { AppError } from "../../../utils/AppError";
+import { sendEmail } from "../../../utils/mail/mailer";
+import { logger } from "../../../utils/logger";
 import type { Prisma } from "../../../generated/prisma/client";
 import type { UpdateAdminProfileInput } from "./auth.validation";
 
@@ -229,10 +232,104 @@ const logoutAdmin = async (refreshToken: string) => {
   }
 };
 
+// ─── Forgot Password ─────────────────────────────────────────────
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+// Always resolves successfully — never reveals whether the email exists
+// (prevents account enumeration). The email is only sent for real, active admins.
+const forgotAdminPassword = async (email: string) => {
+  const admin = await prisma.admin.findUnique({
+    where: { email },
+    select: { id: true, email: true, isActive: true, firstName: true, name: true },
+  });
+  if (!admin || !admin.isActive) return;
+
+  // One live token at a time: invalidate any previous unused tokens.
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const now = new Date();
+  await prisma.$transaction([
+    prisma.adminPasswordResetToken.updateMany({
+      where: { adminId: admin.id, usedAt: null },
+      data: { usedAt: now },
+    }),
+    prisma.adminPasswordResetToken.create({
+      data: {
+        adminId: admin.id,
+        tokenHash: tokenUtils.hashToken(rawToken),
+        expiresAt: new Date(now.getTime() + RESET_TOKEN_TTL_MS),
+      },
+    }),
+  ]);
+
+  const resetUrl = `${envConfig.CLIENT_URL}/reset-password?token=${rawToken}`;
+  const greeting = admin.firstName ?? admin.name ?? "there";
+  const sent = await sendEmail({
+    to: admin.email,
+    subject: "Reset your Adler admin password",
+    text:
+      `Hi ${greeting},\n\n` +
+      `We received a request to reset your Adler admin password. ` +
+      `Open the link below to choose a new one (valid for 30 minutes):\n\n` +
+      `${resetUrl}\n\n` +
+      `If you didn't request this, you can safely ignore this email — your password stays unchanged.`,
+    html:
+      `<p>Hi ${greeting},</p>` +
+      `<p>We received a request to reset your <strong>Adler</strong> admin password. ` +
+      `Click the button below to choose a new one (valid for <strong>30 minutes</strong>):</p>` +
+      `<p><a href="${resetUrl}" style="display:inline-block;background:#2563EB;color:#ffffff;` +
+      `padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">Reset password</a></p>` +
+      `<p>Or paste this link into your browser:<br/><a href="${resetUrl}">${resetUrl}</a></p>` +
+      `<p style="color:#64748b;font-size:13px">If you didn't request this, you can safely ignore ` +
+      `this email — your password stays unchanged.</p>`,
+  });
+  if (!sent) {
+    // SMTP not configured (dev) — the token still works; surface the link in logs.
+    logger.info({ resetUrl }, "SMTP not configured — admin password reset link (dev only)");
+  }
+};
+
+// ─── Reset Password ──────────────────────────────────────────────
+const resetAdminPassword = async (rawToken: string, newPassword: string) => {
+  const tokenHash = tokenUtils.hashToken(rawToken);
+  const record = await prisma.adminPasswordResetToken.findUnique({
+    where: { tokenHash },
+    select: { id: true, adminId: true, expiresAt: true, usedAt: true },
+  });
+
+  if (!record || record.usedAt || record.expiresAt <= new Date()) {
+    throw new AppError("This reset link is invalid or has expired. Please request a new one.", 400);
+  }
+
+  const admin = await prisma.admin.findUnique({
+    where: { id: record.adminId },
+    select: { id: true, isActive: true },
+  });
+  if (!admin || !admin.isActive) {
+    throw new AppError("This admin account is no longer active.", 403);
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  const now = new Date();
+  await prisma.$transaction([
+    prisma.admin.update({ where: { id: admin.id }, data: { passwordHash } }),
+    prisma.adminPasswordResetToken.update({
+      where: { id: record.id },
+      data: { usedAt: now },
+    }),
+    // Revoke every session — a reset means the old credentials may be compromised.
+    prisma.adminRefreshToken.updateMany({
+      where: { adminId: admin.id, revokedAt: null },
+      data: { revokedAt: now },
+    }),
+  ]);
+};
+
 export const adminServices = {
   loginAdmin,
   getAdminProfile,
   updateAdminProfile,
   refreshAdminToken,
   logoutAdmin,
+  forgotAdminPassword,
+  resetAdminPassword,
 };

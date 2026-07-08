@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { initials } from '@/lib/utils';
+import { cn, initials } from '@/lib/utils';
 import type { StaffSummary } from '@/features/overview/api/overview.service';
 
 interface RecentStaffCardProps {
@@ -54,7 +54,7 @@ export function RecentStaffCard({ loading, staff }: RecentStaffCardProps) {
                 <p className="text-[11px] font-medium text-slate-500 truncate">{e.designation} · {e.department}</p>
               </div>
             </div>
-            <Badge variant="outline" className="border-slate-200 text-slate-600 bg-slate-50">
+            <Badge variant="outline" className={cn(`border-slate-200 text-slate-600 bg-slate-50 ${e.status === 'Active' ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'   }`)} >
               {e.status}
             </Badge>
           </div>

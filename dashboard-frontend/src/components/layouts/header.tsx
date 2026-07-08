@@ -1,13 +1,10 @@
-import { Bell, AlignJustify, UtensilsCrossed, Sparkles } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { AlignJustify, UtensilsCrossed, Sparkles } from 'lucide-react';
 
 import { useSidebar } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
 import { UserDropdown } from './user-dropdown';
 
 export function Header() {
   const { toggleSidebar } = useSidebar();
-  const navigate = useNavigate();
 
   return (
     <header className="h-[65px] flex items-center gap-4 border-b border-slate-200/60 bg-white/70 backdrop-blur-2xl shadow-sm px-4 md:px-6 top-0 z-30 sticky">
@@ -37,17 +34,6 @@ export function Header() {
 
       {/* Right actions */}
       <div className="ml-auto flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate('/dashboard/notifications')}
-          className="relative h-11 w-11 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all"
-          aria-label="Notifications"
-        >
-          <Bell className="h-[22px] w-[22px]" />
-          <span className="absolute top-[10px] right-[10px] h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-white" />
-        </Button>
-
         <UserDropdown />
       </div>
     </header>

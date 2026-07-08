@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, SafeAreaView, ScrollView, ActivityIndicator, TextInput, Alert, Modal } from 'react-native';
+import { View, Text, StyleSheet, Pressable, SafeAreaView, ScrollView, ActivityIndicator, TextInput, Alert, Modal, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { colors } from '@/theme/colors';
 import { useMyLeaves, useCreateLeave, useCancelLeave, LeaveRequest, type LeaveType } from '@/features/leaves';
 import { format, parseISO } from 'date-fns';
+
+// Local YYYY-MM-DD (avoids the off-by-one-day bug toISOString causes across timezones).
+const toYMD = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+const displayDate = (ymd: string) => {
+  try {
+    return format(parseISO(ymd), 'EEE, MMM d, yyyy');
+  } catch {
+    return ymd;
+  }
+};
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const LEAVE_TYPES: LeaveType[] = ['VACATION', 'SICK', 'PERSONAL', 'OTHER'];
@@ -20,6 +33,34 @@ export default function LeavesScreen() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reason, setReason] = useState('');
+  // Which date field the native picker is currently editing.
+  const [picker, setPicker] = useState<'start' | 'end' | null>(null);
+
+  const onPickDate = (event: DateTimePickerEvent, date?: Date) => {
+    const target = picker;
+    // Android delivers a single event and must be closed immediately;
+    // a "dismissed" event means the user cancelled.
+    if (Platform.OS === 'android') setPicker(null);
+    if (event.type === 'dismissed' || !date || !target) return;
+    const ymd = toYMD(date);
+    if (target === 'start') {
+      setStartDate(ymd);
+      // Keep the range valid — pull the end date up if it now sits before start.
+      if (endDate && endDate < ymd) setEndDate(ymd);
+    } else {
+      setEndDate(ymd);
+    }
+    if (Platform.OS === 'ios') setPicker(null);
+  };
+
+  // Initial value shown when the picker opens; end can't precede start.
+  const pickerValue = (() => {
+    const current = picker === 'start' ? startDate : endDate;
+    if (current) return parseISO(current);
+    if (picker === 'end' && startDate) return parseISO(startDate);
+    return new Date();
+  })();
+  const pickerMinDate = picker === 'end' && startDate ? parseISO(startDate) : new Date();
 
   // Mirrors the backend's createLeaveSchema so obvious mistakes never leave
   // the device: valid dates, end >= start, not ending in the past, reason ≥ 10.
@@ -152,21 +193,39 @@ export default function LeavesScreen() {
               ))}
             </View>
 
-            <Text style={styles.label}>Start Date (YYYY-MM-DD)</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="e.g. 2024-08-01" 
-              value={startDate} 
-              onChangeText={setStartDate} 
-            />
+            <Text style={styles.label}>Start Date</Text>
+            <Pressable
+              style={[styles.dateField, picker === 'start' && styles.dateFieldActive]}
+              onPress={() => setPicker(picker === 'start' ? null : 'start')}
+            >
+              <Ionicons name="calendar-outline" size={18} color={startDate ? colors.blue : colors.gray400} />
+              <Text style={startDate ? styles.dateFieldText : styles.dateFieldPlaceholder}>
+                {startDate ? displayDate(startDate) : 'Select a start date'}
+              </Text>
+              <Ionicons name="chevron-down" size={16} color={colors.gray400} />
+            </Pressable>
 
-            <Text style={styles.label}>End Date (YYYY-MM-DD)</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="e.g. 2024-08-05" 
-              value={endDate} 
-              onChangeText={setEndDate} 
-            />
+            <Text style={styles.label}>End Date</Text>
+            <Pressable
+              style={[styles.dateField, picker === 'end' && styles.dateFieldActive]}
+              onPress={() => setPicker(picker === 'end' ? null : 'end')}
+            >
+              <Ionicons name="calendar-outline" size={18} color={endDate ? colors.blue : colors.gray400} />
+              <Text style={endDate ? styles.dateFieldText : styles.dateFieldPlaceholder}>
+                {endDate ? displayDate(endDate) : 'Select an end date'}
+              </Text>
+              <Ionicons name="chevron-down" size={16} color={colors.gray400} />
+            </Pressable>
+
+            {picker !== null && (
+              <DateTimePicker
+                value={pickerValue}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'inline' : 'default'}
+                minimumDate={pickerMinDate}
+                onChange={onPickDate}
+              />
+            )}
 
             <Text style={styles.label}>Reason (min. 10 characters)</Text>
             <TextInput
@@ -253,6 +312,20 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, fontWeight: '700', color: colors.gray700, marginBottom: 8, marginTop: 16 },
   input: { backgroundColor: colors.gray50, borderWidth: 1, borderColor: colors.gray200, borderRadius: 12, padding: 14, fontSize: 16, color: colors.gray900 },
   textArea: { height: 100, textAlignVertical: 'top' },
+
+  dateField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: colors.gray50,
+    borderWidth: 1,
+    borderColor: colors.gray200,
+    borderRadius: 12,
+    padding: 14,
+  },
+  dateFieldActive: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
+  dateFieldText: { flex: 1, fontSize: 16, fontWeight: '600', color: colors.gray900 },
+  dateFieldPlaceholder: { flex: 1, fontSize: 16, color: colors.gray400 },
   
   typeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   typeBtn: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, backgroundColor: colors.gray50, borderWidth: 1, borderColor: colors.gray200 },

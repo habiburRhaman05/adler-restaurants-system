@@ -41,5 +41,23 @@ export const updateAdminProfileSchema = z
     path: ["newPassword"],
   });
 
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string({ required_error: "Email is required" })
+    .email("Please provide a valid email address")
+    .trim()
+    .toLowerCase(),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string({ required_error: "Reset token is required" }).min(32, "Invalid reset token"),
+  newPassword: z
+    .string({ required_error: "New password is required" })
+    .min(8, "New password must be at least 8 characters")
+    .max(128),
+});
+
 export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
 export type UpdateAdminProfileInput = z.infer<typeof updateAdminProfileSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

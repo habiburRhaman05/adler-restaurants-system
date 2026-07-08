@@ -3,7 +3,11 @@ import { adminServices } from "./auth.service";
 import { sendSuccess, sendError } from "../../../utils/apiResponse";
 import { tokenUtils } from "../../../utils/token";
 import { CookieUtils } from "../../../utils/cookie";
-import type { UpdateAdminProfileInput } from "./auth.validation";
+import type {
+  UpdateAdminProfileInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
+} from "./auth.validation";
 
 // ─── Login ───────────────────────────────────────────────────────
 export const login = async (req: Request, res: Response): Promise<void> => {
@@ -21,6 +25,33 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     data: {
       admin: result.admin,
     },
+  });
+};
+
+// ─── Forgot Password ─────────────────────────────────────────────
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  const { email } = req.validated as ForgotPasswordInput;
+
+  await adminServices.forgotAdminPassword(email);
+
+  // Same response whether or not the account exists — no enumeration.
+  sendSuccess(res, {
+    statusCode: 200,
+    message: "If an account exists for that email, a reset link has been sent.",
+    data: { sent: true },
+  });
+};
+
+// ─── Reset Password ──────────────────────────────────────────────
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  const { token, newPassword } = req.validated as ResetPasswordInput;
+
+  await adminServices.resetAdminPassword(token, newPassword);
+
+  sendSuccess(res, {
+    statusCode: 200,
+    message: "Password reset successfully. Please log in with your new password.",
+    data: { reset: true },
   });
 };
 

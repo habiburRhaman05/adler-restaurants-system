@@ -285,17 +285,32 @@ export function AssignSlotSheet({
   assignData, 
   onAssign 
 }: { 
-  open: boolean, 
-  onOpenChange: (open: boolean) => void, 
-  assignData: { violId: string | null, dayIdx: number, fnKey?: string, needLabel?: string } | null, 
-  violations: Violation[], 
-  onAssign: (violId: string | null, staffName: string, dayIdx: number, fnKey: string, tm: string, compOption?: "overtime" | "reduce-future") => void 
+  open: boolean,
+  onOpenChange: (open: boolean) => void,
+  assignData: { violId: string | null, dayIdx: number, fnKey?: string, needLabel?: string } | null,
+  violations: Violation[],
+  onAssign: (violId: string | null, staffName: string, dayIdx: number, fnKey: string, tm: string, compOption?: "overtime" | "reduce-future") => void | Promise<unknown>
 }) {
   const [compensationOption, setCompensationOption] = useState<"overtime" | "reduce-future">("overtime");
+  // Name of the candidate whose assignment is in flight. The sheet stays open
+  // until the mutation settles and only closes on success.
+  const [assigningName, setAssigningName] = useState<string | null>(null);
 
   if (!assignData) return null;
 
   const fnKey = assignData.fnKey || "service";
+
+  const handleAssign = async (staffName: string) => {
+    setAssigningName(staffName);
+    try {
+      await onAssign(assignData.violId, staffName, assignData.dayIdx, fnKey, "17:00–23:30", compensationOption);
+      onOpenChange(false);
+    } catch {
+      /* keep open — the mutation hook shows the error toast */
+    } finally {
+      setAssigningName(null);
+    }
+  };
 
   // Qualified candidates: employees whose categories include this slot's
   // category. The backend runs the full L-GAV rule check on assignment and
@@ -307,7 +322,7 @@ export function AssignSlotSheet({
   }));
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={(v) => { if (assigningName) return; onOpenChange(v); }}>
       <SheetContent className="sm:max-w-md overflow-y-auto bg-white border-l border-slate-200 shadow-2xl z-50">
         <SheetHeader className="mb-6 pb-4 border-b border-slate-100">
           <SheetTitle className="text-xl font-bold text-slate-900">Assign Staff to Shift</SheetTitle>
@@ -355,11 +370,17 @@ export function AssignSlotSheet({
                       <div className="font-bold text-sm truncate text-slate-900">{c.n}</div>
                       <div className={`text-xs font-medium mt-0.5 ${c.ok ? "text-emerald-600" : "text-orange-600"}`}>{c.r}</div>
                     </div>
-                    <Button size="sm" onClick={() => { 
-                      onAssign(assignData.violId, c.n, assignData.dayIdx, fnKey, "17:00–23:30", compensationOption); 
-                      onOpenChange(false); 
-                    }} className={`shrink-0 shadow-sm ${c.ok ? "bg-slate-900 hover:bg-slate-800 text-white" : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"}`}>
-                      {c.ok ? "Assign" : "Force Assign"}
+                    <Button
+                      size="sm"
+                      disabled={assigningName !== null}
+                      onClick={() => handleAssign(c.n)}
+                      className={`shrink-0 shadow-sm ${c.ok ? "bg-slate-900 hover:bg-slate-800 text-white" : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"}`}
+                    >
+                      {assigningName === c.n ? (
+                        <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Assigning…</>
+                      ) : (
+                        c.ok ? "Assign" : "Force Assign"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -372,31 +393,80 @@ export function AssignSlotSheet({
   );
 }
 
-export function ShiftInfoModal({ 
-  open, 
-  onOpenChange, 
+export function ShiftInfoModal({
+  open,
+  onOpenChange,
   shiftInfo,
   violations,
   onRemove,
   onEditTime,
   onApplyFix
-}: { 
-  open: boolean, 
-  onOpenChange: (open: boolean) => void, 
+}: {
+  open: boolean,
+  onOpenChange: (open: boolean) => void,
   shiftInfo: { staff: Staff, dayIdx: number, shift: Shift } | null,
   violations: Violation[],
-  onRemove: (staffId: string, dayIdx: number, shiftId: string) => void,
-  onEditTime: (staffId: string, dayIdx: number, shiftId: string, newTm: string) => void,
-  onApplyFix: (violId: string) => void
+  onRemove: (staffId: string, dayIdx: number, shiftId: string) => void | Promise<unknown>,
+  onEditTime: (staffId: string, dayIdx: number, shiftId: string, newTm: string) => void | Promise<unknown>,
+  onApplyFix: (violId: string) => void | Promise<unknown>
 }) {
   const [isEditingTime, setIsEditingTime] = useState(false);
   const [newTime, setNewTime] = useState("");
+  // Which action is in flight — the modal stays open (and uncloseable) until
+  // it settles; it only closes on success. Errors keep it open so the admin
+  // can retry (the mutation hook already shows the error toast).
+  const [busy, setBusy] = useState<null | "remove" | "time" | "fix">(null);
 
   if (!shiftInfo) return null;
   const { staff, shift, dayIdx } = shiftInfo;
 
+  const handleRemove = async () => {
+    setBusy("remove");
+    try {
+      await onRemove(staff.id, dayIdx, shift.id);
+      onOpenChange(false);
+      setIsEditingTime(false);
+    } catch {
+      /* keep open — error toast comes from the mutation */
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const handleSaveTime = async () => {
+    setBusy("time");
+    try {
+      await onEditTime(staff.id, dayIdx, shift.id, newTime);
+      setIsEditingTime(false);
+    } catch {
+      /* keep editing state so the admin can correct and retry */
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const handleApplyFix = async (violId: string) => {
+    setBusy("fix");
+    try {
+      await onApplyFix(violId);
+      onOpenChange(false);
+      setIsEditingTime(false);
+    } catch {
+      /* keep open */
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if(!v) setIsEditingTime(false); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (busy) return; // no closing (X / overlay / Esc) while an action is running
+        onOpenChange(v);
+        if (!v) setIsEditingTime(false);
+      }}
+    >
       <DialogContent className="sm:max-w-sm">
         <div className="flex justify-between items-start pt-2">
           <div>
@@ -415,11 +485,10 @@ export function ShiftInfoModal({
                 </div>
               ) : (
                 <div className="flex items-center gap-1">
-                  <Input value={newTime} onChange={e => setNewTime(e.target.value)} className="h-7 text-xs font-mono px-2" />
-                  <Button size="sm" className="h-7 px-2" onClick={() => {
-                    onEditTime(staff.id, dayIdx, shift.id, newTime);
-                    setIsEditingTime(false);
-                  }}>Save</Button>
+                  <Input value={newTime} onChange={e => setNewTime(e.target.value)} disabled={busy !== null} className="h-7 text-xs font-mono px-2" />
+                  <Button size="sm" className="h-7 px-2" disabled={busy !== null} onClick={handleSaveTime}>
+                    {busy === "time" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Save"}
+                  </Button>
                 </div>
               )}
             </div>
@@ -449,11 +518,12 @@ export function ShiftInfoModal({
                 </div>
                 {activeViol && activeViol.fix && (
                   <div className="mt-2 w-full flex justify-end">
-                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white h-7 text-xs" onClick={() => {
-                      onApplyFix(activeViol.id);
-                      onOpenChange(false);
-                    }}>
-                      Apply Fix: {activeViol.fix}
+                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white h-7 text-xs" disabled={busy !== null} onClick={() => handleApplyFix(activeViol.id)}>
+                      {busy === "fix" ? (
+                        <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Applying…</>
+                      ) : (
+                        <>Apply Fix: {activeViol.fix}</>
+                      )}
                     </Button>
                   </div>
                 )}
@@ -471,8 +541,12 @@ export function ShiftInfoModal({
           )}
         </div>
         <DialogFooter className="sm:justify-start gap-2">
-          <Button variant="destructive" onClick={() => { onRemove(staff.id, dayIdx, shift.id); onOpenChange(false); }} className="w-full sm:w-auto">
-            Remove Shift
+          <Button variant="destructive" disabled={busy !== null} onClick={handleRemove} className="w-full sm:w-auto">
+            {busy === "remove" ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Removing…</>
+            ) : (
+              "Remove Shift"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
