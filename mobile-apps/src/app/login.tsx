@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import { colors } from '@/theme';
 
 export default function LoginScreen() {
   const login = useLogin();
+  const passwordRef = useRef<TextInput>(null);
 
   const errorMessage = useMemo(() => {
     if (!login.isError) return null;
@@ -41,8 +42,16 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+      {/* SDK 55 enforces edge-to-edge on Android, where the window no longer
+          auto-resizes for the keyboard — so `padding` is needed on BOTH platforms,
+          otherwise the password field and login button stay hidden behind it. */}
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
           <View style={styles.brandRow}>
             <View style={styles.brandIcon}>
               <Ionicons name="calendar" size={26} color={colors.white} />
@@ -67,6 +76,9 @@ export default function LoginScreen() {
                     autoCapitalize="none"
                     keyboardType="email-address"
                     autoComplete="email"
+                    returnKeyType="next"
+                    submitBehavior="submit"
+                    onSubmitEditing={() => passwordRef.current?.focus()}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -84,11 +96,14 @@ export default function LoginScreen() {
                 <View style={[styles.inputWrap, !!errors.password && styles.inputWrapError]}>
                   <Ionicons name="lock-closed-outline" size={18} color={errors.password ? colors.red : colors.gray400} />
                   <TextInput
+                    ref={passwordRef}
                     style={styles.input}
                     placeholder="Enter your password"
                     placeholderTextColor={colors.gray300}
                     secureTextEntry
                     autoComplete="password"
+                    returnKeyType="done"
+                    onSubmitEditing={handleSubmit(onSubmit)}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}

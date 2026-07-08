@@ -1,19 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { secureStorage } from '@/lib/storage';
 import { logger } from '@/lib/logger';
 import { queryClient } from '@/lib/queryClient';
-import { getExpoPushToken } from '../push';
+import { getExpoPushToken, isExpoGo } from '../push';
 import { registerPushDevice } from '../api/notifications.api';
 import { notificationKeys } from './useNotifications';
-
-// Expo Go (SDK 53+) removed remote push — calling into it there throws. Only a
-// dev/production build supports push, so in Expo Go we skip all of it. The
-// in-app inbox + bell (plain API calls) keep working regardless.
-const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
 // Where each notification type sends the user when tapped.
 function routeForData(data: Record<string, unknown> | undefined): string {
