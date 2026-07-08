@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { sendPushToUsers } from "../../../utils/push/push.service";
 import { scheduleSwapSelect } from "../../user/schedule-swaps/schedule-swaps.service";
 import type {
   ListScheduleSwapsQuery,
@@ -120,6 +121,12 @@ const approveSwap = async (swapId: string, adminId: string, data: ReviewSchedule
     }),
   ]);
 
+  await sendPushToUsers([swap.initiatorUserId, swap.recipientUserId], {
+    title: "Swap approved",
+    body: "Your shift swap was approved. Tap to see your updated schedule.",
+    data: { type: "SWAP_REQUEST_RESULT", screen: "schedule", swapId, result: "APPROVED" },
+  });
+
   return updated;
 };
 
@@ -152,6 +159,14 @@ const rejectSwap = async (swapId: string, adminId: string, data: ReviewScheduleS
       select: scheduleSwapSelect,
     }),
   ]);
+
+  await sendPushToUsers([swap.initiatorUserId, swap.recipientUserId], {
+    title: "Swap not approved",
+    body: data.reason
+      ? `Your shift swap was not approved: ${data.reason}`
+      : "Your shift swap request was not approved by the admin.",
+    data: { type: "SWAP_REQUEST_RESULT", screen: "swaps", swapId, result: "REJECTED" },
+  });
 
   return updated;
 };

@@ -14,8 +14,15 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 import { useSwaps, useApproveSwap, useRejectSwap } from "@/features/swaps/hooks/use-swaps";
 import { useShiftApprovalsFeed, useApproveResponse, useRejectResponse } from "@/features/shifts/hooks/use-shifts";
+import {
+  useScheduleSwaps, useApproveScheduleSwap, useRejectScheduleSwap,
+} from "@/features/schedule-swaps/hooks/use-schedule-swaps";
 import type { Swap } from "@/features/swaps/api/swap.service";
 import type { Shift, Volunteer } from "@/features/shifts/api/shift.service";
+import {
+  scheduleSwapUserName,
+  type ScheduleSwap, type ScheduleSwapShift, type ScheduleSwapStatus, type ScheduleSwapFilters,
+} from "@/features/schedule-swaps/api/schedule-swap.service";
 
 import { initials } from "@/lib/utils";
 
@@ -39,8 +46,11 @@ const formatShiftTime = (startStr: string, endStr: string) => {
   }
 };
 
+const tabTriggerClass =
+  "rounded-lg font-semibold px-5 py-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 data-[state=active]:border data-[state=active]:border-blue-200";
+
 export function ApprovalsPage() {
-  const [activeTab, setActiveTab] = useState<"swaps" | "shifts">("swaps");
+  const [activeTab, setActiveTab] = useState<"schedule-swaps" | "swaps" | "shifts">("schedule-swaps");
 
   return (
     <div className="p-4 md:p-8 space-y-6 max-w-[1600px]">
@@ -50,15 +60,22 @@ export function ApprovalsPage() {
         <p className="text-slate-500 mt-1 font-medium">Manage employee shift swaps and open shift volunteers.</p>
       </header>
 
-      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "swaps" | "shifts")} className="w-full">
+      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "schedule-swaps" | "swaps" | "shifts")} className="w-full">
         <TabsList className="bg-slate-100 p-1.5 rounded-xl h-auto">
-          <TabsTrigger value="swaps" className="rounded-lg font-semibold px-5 py-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 data-[state=active]:border data-[state=active]:border-blue-200">
+          <TabsTrigger value="schedule-swaps" className={tabTriggerClass}>
             Shift Swaps
           </TabsTrigger>
-          <TabsTrigger value="shifts" className="rounded-lg font-semibold px-5 py-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 data-[state=active]:border data-[state=active]:border-blue-200">
+          <TabsTrigger value="swaps" className={tabTriggerClass}>
+            Offer Swaps
+          </TabsTrigger>
+          <TabsTrigger value="shifts" className={tabTriggerClass}>
             Open Shift Volunteers
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="schedule-swaps" className="space-y-4 mt-6">
+          <ScheduleSwapsTabContent />
+        </TabsContent>
 
         <TabsContent value="swaps" className="space-y-4 mt-6">
           <SwapsTabContent />
@@ -68,6 +85,256 @@ export function ApprovalsPage() {
           <ShiftsTabContent />
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// ─── SCHEDULE SWAPS (roster swaps requested from the mobile app) ────────────
+
+type ScheduleSwapView = "pending" | "waiting" | "history";
+
+const SCHEDULE_SWAP_VIEWS: { key: ScheduleSwapView; label: string }[] = [
+  { key: "pending", label: "Needs Approval" },
+  { key: "waiting", label: "Waiting on Employee" },
+  { key: "history", label: "History" },
+];
+
+const RESOLVED_SWAP_STATUSES: ScheduleSwapStatus[] = ["APPROVED", "REJECTED", "EXPIRED", "CANCELLED"];
+
+const SCHEDULE_SWAP_STATUS_BADGE: Record<ScheduleSwapStatus, { label: string; className: string }> = {
+  PENDING_ADMIN_APPROVAL: { label: "Needs approval", className: "border-amber-200 text-amber-700 bg-amber-50" },
+  PENDING_RECIPIENT: { label: "Waiting on employee", className: "border-blue-200 text-blue-700 bg-blue-50" },
+  APPROVED: { label: "Approved", className: "border-emerald-200 text-emerald-700 bg-emerald-50" },
+  REJECTED: { label: "Rejected", className: "border-red-200 text-red-700 bg-red-50" },
+  EXPIRED: { label: "Expired", className: "border-slate-200 text-slate-500 bg-slate-50" },
+  CANCELLED: { label: "Cancelled", className: "border-slate-200 text-slate-500 bg-slate-50" },
+};
+
+const SCHEDULE_SWAP_EMPTY_TEXT: Record<ScheduleSwapView, string> = {
+  pending: "No swaps waiting for your approval.",
+  waiting: "No requests are waiting on an employee's answer.",
+  history: "No resolved swap requests yet.",
+};
+
+function ScheduleSwapsTabContent() {
+  const [view, setView] = useState<ScheduleSwapView>("pending");
+
+  const filters: ScheduleSwapFilters =
+    view === "pending"
+      ? { status: "PENDING_ADMIN_APPROVAL", limit: 50 }
+      : view === "waiting"
+        ? { status: "PENDING_RECIPIENT", limit: 50 }
+        : { limit: 50 };
+
+  const { data, isLoading, isError } = useScheduleSwaps(filters);
+  const approveMut = useApproveScheduleSwap();
+  const rejectMut = useRejectScheduleSwap();
+
+  const [rejectTarget, setRejectTarget] = useState<ScheduleSwap | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  // Approving despite L-GAV violations needs an explicit confirmation step.
+  const [approveTarget, setApproveTarget] = useState<ScheduleSwap | null>(null);
+
+  const swaps = (data?.swaps ?? []).filter((s) =>
+    view === "history" ? RESOLVED_SWAP_STATUSES.includes(s.status) : true
+  );
+
+  const handleApprove = (swap: ScheduleSwap) => {
+    if (swap.ruleCheckPassed === false) {
+      setApproveTarget(swap);
+      return;
+    }
+    approveMut.mutate({ swapId: swap.id });
+  };
+
+  const handleReject = () => {
+    if (!rejectTarget) return;
+    rejectMut.mutate(
+      { swapId: rejectTarget.id, reason: rejectReason.trim() || undefined },
+      { onSuccess: () => { setRejectTarget(null); setRejectReason(""); } }
+    );
+  };
+
+  if (isError) return <div className="py-16 text-center text-red-600 font-medium">Failed to load swap requests.</div>;
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-2">
+        {SCHEDULE_SWAP_VIEWS.map(({ key, label }) => (
+          <Button
+            key={key}
+            variant={view === key ? "default" : "outline"}
+            size="sm"
+            className={`rounded-xl font-semibold ${view === key ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}
+            onClick={() => setView(key)}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
+
+      {isLoading && Array.from({ length: 2 }).map((_, i) => <ApprovalSkeleton key={i} />)}
+      {!isLoading && swaps.length === 0 ? (
+        <Card className="rounded-2xl border-dashed border-slate-200 bg-white/80 backdrop-blur-sm">
+          <CardContent className="py-16 text-center text-slate-400 font-medium">{SCHEDULE_SWAP_EMPTY_TEXT[view]}</CardContent>
+        </Card>
+      ) : swaps.map((swap) => (
+        <ScheduleSwapCard
+          key={swap.id}
+          swap={swap}
+          onApprove={() => handleApprove(swap)}
+          onReject={() => setRejectTarget(swap)}
+          busy={approveMut.isPending || rejectMut.isPending}
+        />
+      ))}
+
+      {/* Reject with reason (sent to both employees) */}
+      <Dialog open={!!rejectTarget} onOpenChange={(o) => !o && setRejectTarget(null)}>
+        <DialogContent className="max-w-md rounded-2xl border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-2xl shadow-slate-900/10">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-slate-900">Reject Swap Request</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm font-medium text-slate-500 mt-1">Both employees will be notified. Adding a reason helps them understand the decision.</p>
+          <div className="py-4">
+            <Textarea placeholder="e.g. We need senior coverage on that Saturday" value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} className="rounded-xl border-slate-200 bg-slate-50/50 focus-visible:ring-blue-500/20 focus-visible:border-blue-300 min-h-[100px] resize-none transition-all" />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" className="rounded-xl font-semibold border-slate-200 hover:bg-slate-50" onClick={() => setRejectTarget(null)}>Cancel</Button>
+            <Button className="rounded-xl font-semibold bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/25 transition-all duration-200" onClick={handleReject} disabled={rejectMut.isPending}>
+              {rejectMut.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Rejecting…</> : "Reject swap"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm approval despite advisory rule violations */}
+      <Dialog open={!!approveTarget} onOpenChange={(o) => !o && setApproveTarget(null)}>
+        <DialogContent className="max-w-md rounded-2xl border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-2xl shadow-slate-900/10">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-slate-900">Approve Despite Rule Warnings?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm font-medium text-slate-500 mt-1">The L-GAV check flagged this swap. The check is advisory — you can still approve it.</p>
+          {approveTarget?.ruleCheckResult?.violations?.length ? (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm font-medium text-amber-700">
+              <ul className="list-disc pl-4 space-y-1">
+                {approveTarget.ruleCheckResult.violations.map((v, i) => <li key={i}>{v}</li>)}
+              </ul>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" className="rounded-xl font-semibold border-slate-200 hover:bg-slate-50" onClick={() => setApproveTarget(null)}>Cancel</Button>
+            <Button
+              className="rounded-xl font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-lg shadow-amber-600/25 transition-all duration-200"
+              disabled={approveMut.isPending}
+              onClick={() => {
+                if (!approveTarget) return;
+                approveMut.mutate({ swapId: approveTarget.id }, { onSuccess: () => setApproveTarget(null) });
+              }}
+            >
+              {approveMut.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Approving…</> : "Approve anyway"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function ScheduleSwapCard({ swap, onApprove, onReject, busy }: {
+  swap: ScheduleSwap;
+  onApprove: () => void;
+  onReject: () => void;
+  busy: boolean;
+}) {
+  const badge = SCHEDULE_SWAP_STATUS_BADGE[swap.status];
+  const violations = swap.ruleCheckResult?.violations ?? [];
+  const failedRules = swap.ruleCheckPassed === false;
+  const actionable = swap.status === "PENDING_ADMIN_APPROVAL";
+
+  return (
+    <Card className={`rounded-2xl shadow-md shadow-slate-100/50 bg-white/90 backdrop-blur-sm border transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/60 hover:-translate-y-0.5 ${failedRules && actionable ? "border-amber-200 shadow-amber-100/30" : "border-slate-200/80"}`}>
+      <CardContent className="p-6 space-y-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <Clock className="h-3.5 w-3.5" /> Requested {formatDate(swap.createdAt)}
+            {swap.recipientRespondedAt && <span className="normal-case tracking-normal">· accepted by colleague {formatDate(swap.recipientRespondedAt)}</span>}
+          </div>
+          <div className="flex items-center gap-2">
+            {actionable && (
+              <Badge variant="outline" className={`px-3 py-1 rounded-lg font-semibold ${!failedRules ? "border-emerald-200 text-emerald-700 bg-emerald-50" : "border-amber-200 text-amber-700 bg-amber-50"}`}>
+                {!failedRules ? <><CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />Rules OK</> : <><AlertTriangle className="h-3.5 w-3.5 mr-1.5" />Rule Warning</>}
+              </Badge>
+            )}
+            <Badge variant="outline" className={`px-3 py-1 rounded-lg font-semibold ${badge.className}`}>{badge.label}</Badge>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-center">
+          <ScheduleShiftBlock name={scheduleSwapUserName(swap.initiatorUser)} shift={swap.initiatorShift} label="Gives away" />
+          <div className="hidden md:flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <ArrowLeftRight className="h-4 w-4" />
+            </div>
+          </div>
+          <ScheduleShiftBlock name={scheduleSwapUserName(swap.recipientUser)} shift={swap.recipientShift} label="Gives away" />
+        </div>
+
+        {actionable && failedRules && violations.length > 0 && (
+          <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm font-medium text-amber-700">
+            <ul className="list-disc pl-4 space-y-1">
+              {violations.map((v, i) => <li key={i}>{v}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {swap.status === "PENDING_RECIPIENT" && swap.expiresAt && (
+          <p className="text-xs font-semibold text-slate-400">Expires {formatDate(swap.expiresAt)} if the colleague doesn't respond.</p>
+        )}
+
+        {swap.adminReason && RESOLVED_SWAP_STATUSES.includes(swap.status) && (
+          <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Admin note</p>
+            <p className="font-medium text-slate-600">{swap.adminReason}</p>
+          </div>
+        )}
+
+        {actionable && (
+          <div className="flex gap-3 justify-end pt-2">
+            <Button variant="outline" className="rounded-xl font-semibold border-slate-200 hover:bg-slate-50 transition-all" onClick={onReject} disabled={busy}>
+              {busy ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <XCircle className="h-4 w-4 mr-2 text-red-500" />} Reject
+            </Button>
+            <Button className="rounded-xl font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/25 transition-all duration-200" onClick={onApprove} disabled={busy}>
+              {busy ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-2" />} Approve
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ScheduleShiftBlock({ name, shift, label }: { name: string; shift: ScheduleSwapShift | null | undefined; label: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200/80 bg-gradient-to-br from-slate-50/80 to-blue-50/30 p-4">
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-blue-500/20">
+          {initials(name)}
+        </div>
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
+          <p className="font-bold text-slate-900 truncate mt-0.5">{name}</p>
+        </div>
+      </div>
+      <div className="mt-4 space-y-1 text-sm bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+        {shift ? (
+          <>
+            <p className="font-bold text-slate-900">{shift.category?.name ?? "Shift"}</p>
+            <p className="text-slate-500 font-medium">{formatShiftTime(shift.startTime, shift.endTime)}</p>
+          </>
+        ) : (
+          <p className="text-slate-400 font-medium">No specific shift (open request)</p>
+        )}
+      </div>
     </div>
   );
 }

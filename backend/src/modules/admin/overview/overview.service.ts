@@ -35,6 +35,8 @@ const getOverview = async () => {
     pendingApprovals,
     shiftsAwaitingApproval,
     pendingSwaps,
+    pendingScheduleSwaps,
+    scheduleSwapList,
     thisMonth,
     plans,
     recentStaff,
@@ -58,8 +60,27 @@ const getOverview = async () => {
         responses: { some: { status: "ACCEPTED", approvalStatus: "PENDING" } },
       },
     }),
-    // Shift swaps waiting on the admin's review.
+    // Shift-offer swaps waiting on the admin's review.
     prisma.shiftSwapRequest.count({ where: { status: "PENDING" } }),
+    // Roster swaps (mobile /schedule-swaps flow) waiting on the admin's review.
+    prisma.swapRequest.count({ where: { status: "PENDING_ADMIN_APPROVAL" } }),
+    // Newest roster swaps for the "Pending Swaps" overview card.
+    prisma.swapRequest.findMany({
+      where: { status: "PENDING_ADMIN_APPROVAL" },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        ruleCheckPassed: true,
+        initiatorUser: {
+          select: { id: true, name: true, firstName: true, lastName: true, email: true },
+        },
+        recipientUser: {
+          select: { id: true, name: true, firstName: true, lastName: true, email: true },
+        },
+        initiatorShift: { select: { startTime: true } },
+      },
+    }),
     // Scheduled/worked hours, overtime and wage cost for the current month.
     reportServices.buildReport({}),
     // Weekly plans (newest first) with their assignment counts.
@@ -116,7 +137,8 @@ const getOverview = async () => {
         pendingResponses: pendingApprovals,
       },
       swaps: {
-        pending: pendingSwaps,
+        // Both swap systems: shift-offer swaps + roster swaps from the mobile app.
+        pending: pendingSwaps + pendingScheduleSwaps,
       },
     },
     thisMonth: {
@@ -133,16 +155,29 @@ const getOverview = async () => {
       status: p.status.toLowerCase(),
       assignmentsCount: p._count.shifts,
     })),
-    swaps: swapList.swaps.map((s) => ({
-      id: s.id,
-      fromEmployeeId: s.initiatorUser.id,
-      toEmployeeId: s.recipientUser.id,
-      fromEmployeeName: displayName(s.initiatorUser),
-      toEmployeeName: displayName(s.recipientUser),
-      day: dayName(s.initiatorShift.startTime),
-      time: mealPeriod(s.initiatorShift.startTime),
-      ruleCheck: s.ruleCheck?.passed ? "pass" : "fail",
-    })),
+    swaps: [
+      // Roster swaps first — they are the live queue the mobile app feeds.
+      ...scheduleSwapList.map((s) => ({
+        id: s.id,
+        fromEmployeeId: s.initiatorUser.id,
+        toEmployeeId: s.recipientUser?.id ?? "",
+        fromEmployeeName: displayName(s.initiatorUser),
+        toEmployeeName: s.recipientUser ? displayName(s.recipientUser) : "Open request",
+        day: s.initiatorShift ? dayName(s.initiatorShift.startTime) : "",
+        time: s.initiatorShift ? mealPeriod(s.initiatorShift.startTime) : "",
+        ruleCheck: s.ruleCheckPassed === false ? "fail" : "pass",
+      })),
+      ...swapList.swaps.map((s) => ({
+        id: s.id,
+        fromEmployeeId: s.initiatorUser.id,
+        toEmployeeId: s.recipientUser.id,
+        fromEmployeeName: displayName(s.initiatorUser),
+        toEmployeeName: displayName(s.recipientUser),
+        day: dayName(s.initiatorShift.startTime),
+        time: mealPeriod(s.initiatorShift.startTime),
+        ruleCheck: s.ruleCheck?.passed ? "pass" : "fail",
+      })),
+    ].slice(0, 5),
     staff: recentStaff.map((u) => ({
       id: u.id,
       name: displayName(u),

@@ -1,4 +1,5 @@
 {
+ 
   "expo": {
     "name": "Adler Staff",
     "slug": "adler-staff",
@@ -14,6 +15,7 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
+
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -41,7 +43,13 @@
         }
       ],
       "expo-secure-store",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "color": "#2563EB"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -4,10 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme';
+import { useNotifications } from '@/features/notifications';
 
 const Header = () => {
   const router = useRouter();
   const [menuVisible, setMenuVisible] = useState(false);
+  const { data } = useNotifications();
+  const unreadCount = data?.unreadCount ?? 0;
 
   const navigateToProfile = () => {
     setMenuVisible(false);
@@ -24,9 +27,19 @@ const Header = () => {
             </View>
             <Text style={styles.logoText}>Adler Staff</Text>
           </View>
-          <Pressable onPress={() => setMenuVisible(true)} style={styles.avatarBtn}>
-            <Ionicons name="person-circle" size={32} color={colors.gray400} />
-          </Pressable>
+          <View style={styles.rightSection}>
+            <Pressable onPress={() => router.push('/notifications')} style={styles.bellBtn} hitSlop={8}>
+              <Ionicons name="notifications-outline" size={24} color={colors.gray700} />
+              {unreadCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unreadCount > 99 ? '99+' : unreadCount}</Text>
+                </View>
+              )}
+            </Pressable>
+            <Pressable onPress={() => setMenuVisible(true)} style={styles.avatarBtn}>
+              <Ionicons name="person-circle" size={32} color={colors.gray400} />
+            </Pressable>
+          </View>
         </View>
       </SafeAreaView>
 
@@ -69,6 +82,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  bellBtn: { padding: 2 },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -6,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 1.5,
+    borderColor: colors.white,
+  },
+  badgeText: { color: colors.white, fontSize: 10, fontWeight: '800' },
   iconBox: {
     width: 32,
     height: 32,
