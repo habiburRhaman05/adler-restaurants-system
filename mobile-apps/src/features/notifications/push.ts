@@ -1,8 +1,18 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform } from 'react-native';
 import { logger } from '@/lib/logger';
+
+/**
+ * True when running inside Expo Go, where remote push was removed in SDK 53+
+ * (calling into it throws). `appOwnership === 'expo'` is the reliable signal;
+ * executionEnvironment is a secondary check. Real push only works in a
+ * dev/production build — in Expo Go we skip it and the in-app inbox still works.
+ */
+export const isExpoGo =
+  Constants.appOwnership === 'expo' ||
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
 // Show a banner + play a sound even when the app is foregrounded.
 Notifications.setNotificationHandler({
@@ -32,6 +42,7 @@ export async function ensureAndroidChannel(): Promise<void> {
  */
 export async function getExpoPushToken(): Promise<string | null> {
   try {
+    if (isExpoGo) return null; // remote push isn't available in Expo Go
     if (!Device.isDevice) return null; // push only works on real hardware
 
     await ensureAndroidChannel();
