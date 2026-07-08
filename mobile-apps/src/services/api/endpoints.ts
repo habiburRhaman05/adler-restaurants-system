@@ -53,4 +53,12 @@ export const ENDPOINTS = {
     create: '/api/v1/leaves',
     cancel: (id: string) => `/api/v1/leaves/${id}/cancel`,
   },
+  // In-app notifications + push device registration (backend: user/notifications).
+  notifications: {
+    list: '/api/v1/notifications',
+    markRead: (id: string) => `/api/v1/notifications/${id}/read`,
+    markAllRead: '/api/v1/notifications/read-all',
+    registerDevice: '/api/v1/notifications/devices',
+    unregisterDevice: '/api/v1/notifications/devices',
+  },
 } as const;

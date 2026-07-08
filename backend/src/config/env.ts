@@ -32,6 +32,11 @@ const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().optional(),
+
+  // Expo push (optional). Push still works without an access token; setting one
+  // enables Expo's enhanced security. When Expo is unreachable, sends are logged
+  // and skipped — a failed push never fails the request that triggered it.
+  EXPO_ACCESS_TOKEN: z.string().optional(),
 });
 
 type EnvConfig = z.infer<typeof envSchema>;

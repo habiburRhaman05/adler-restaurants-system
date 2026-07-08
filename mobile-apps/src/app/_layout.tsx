@@ -1,8 +1,9 @@
 import "../../global.css";
 import { queryClient } from "@/lib/queryClient";
 import { useAuthStore } from "@/features/auth";
+import { usePushRegistration } from "@/features/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Stack, Redirect, useSegments, useRouter } from "expo-router";
+import { Stack, useSegments, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { colors } from "@/theme";
@@ -12,6 +13,9 @@ function RootNavigator() {
   const restoreSession = useAuthStore((s) => s.restoreSession);
   const segments = useSegments();
   const router = useRouter();
+
+  // Register for push + wire tap/deep-link handlers while signed in.
+  usePushRegistration(status === "authenticated");
 
   useEffect(() => {
     restoreSession();
@@ -45,6 +49,7 @@ function RootNavigator() {
       <Stack.Screen name="edit-profile" />
       <Stack.Screen name="leaves" />
       <Stack.Screen name="attendance" />
+      <Stack.Screen name="notifications" />
     </Stack>
   );
 }

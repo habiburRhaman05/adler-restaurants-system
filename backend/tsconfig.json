@@ -9,7 +9,6 @@
     "exactOptionalPropertyTypes": true,
     "strict": true,
     "module": "ESNext",
-    "moduleResolution": "node",
     "target": "ES2023",
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,

@@ -113,26 +113,13 @@ export function LandingPage() {
 
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollTo('features')} className="text-sm font-medium text-[#64748B] hover:text-[#1E293B] transition-colors">
-                Features
-              </button>
-              <button onClick={() => scrollTo('stats')} className="text-sm font-medium text-[#64748B] hover:text-[#1E293B] transition-colors">
-                Stats
-              </button>
-              <button onClick={() => scrollTo('testimonials')} className="text-sm font-medium text-[#64748B] hover:text-[#1E293B] transition-colors">
-                Testimonials
-              </button>
-              <Link
-                to="/login"
-                className="text-sm font-semibold text-[#64748B] hover:text-[#1E293B] transition-colors"
-              >
-                Sign in
-              </Link>
+              
+          
               <Link
                 to="/login"
                 className="inline-flex items-center gap-2 h-12 px-5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-semibold shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
               >
-                Get Started
+                Sign in
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -148,36 +135,7 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-black/[0.06] bg-white/95 backdrop-blur-xl">
-            <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('features')} className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-[#64748B] hover:text-[#1E293B] hover:bg-black/[0.04] transition-all">
-                Features
-              </button>
-              <button onClick={() => scrollTo('stats')} className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-[#64748B] hover:text-[#1E293B] hover:bg-black/[0.04] transition-all">
-                Stats
-              </button>
-              <button onClick={() => scrollTo('testimonials')} className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-[#64748B] hover:text-[#1E293B] hover:bg-black/[0.04] transition-all">
-                Testimonials
-              </button>
-              <div className="pt-3 border-t border-black/[0.06] space-y-3">
-                <Link
-                  to="/login"
-                  className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold text-[#64748B] hover:bg-black/[0.04] transition-all"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/login"
-                  className="block w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-semibold shadow-lg shadow-blue-600/25"
-                >
-                  Get Started
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
+       
       </nav>
 
       {/* ── Hero Section ── */}
@@ -333,18 +291,7 @@ export function LandingPage() {
       </section>
 
       {/* ── Stats Section ── */}
-      <section id="stats" className="relative py-16 md:py-20 bg-white border-y border-black/[0.06]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-3xl md:text-4xl font-extrabold text-blue-600">{stat.value}</p>
-                <p className="mt-2 text-sm font-medium text-[#64748B]">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+ 
 
       {/* ── Features Section ── */}
       <section id="features" className="py-16 md:py-24">
@@ -440,13 +387,7 @@ export function LandingPage() {
             Join hundreds of restaurants and hospitality businesses using ADLER to manage their teams more efficiently.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-2 h-14 px-8 rounded-xl bg-gradient-to-r from-blue-500 to-sky-500 text-white text-base font-semibold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-            >
-              Start Free Trial
-              <ArrowRight className="h-5 w-5" />
-            </Link>
+           
             <Link
               to="/login"
               className="inline-flex items-center gap-2 h-14 px-8 rounded-xl border-2 border-white/[0.15] text-white text-base font-semibold hover:bg-white/10 transition-all duration-200"

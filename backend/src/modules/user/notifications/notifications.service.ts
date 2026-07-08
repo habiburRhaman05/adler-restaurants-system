@@ -1,6 +1,8 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { pushService } from "../../../utils/push/push.service";
 import type { Prisma } from "../../../generated/prisma/client";
+import type { RegisterDeviceInput } from "./notifications.validation";
 
 const notificationSelect = {
   id: true,
@@ -78,8 +80,17 @@ const markAllAsRead = async (userId: string) => {
   return { updatedCount: result.count };
 };
 
+// ─── Device push tokens ──────────────────────────────────────────
+const registerDevice = (userId: string, input: RegisterDeviceInput) =>
+  pushService.registerDeviceToken(userId, input.token, input.platform, input.deviceName);
+
+const unregisterDevice = (userId: string, token: string) =>
+  pushService.removeDeviceToken(userId, token);
+
 export const notificationServices = {
   listNotifications,
   markAsRead,
   markAllAsRead,
+  registerDevice,
+  unregisterDevice,
 };

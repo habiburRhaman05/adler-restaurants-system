@@ -23,3 +23,23 @@ model Notification {
   @@index([createdAt])
   @@map("notifications")
 }
+
+// One row per device a staff member has registered for push notifications.
+// A user can have several (phone + tablet); `token` is the Expo push token and
+// is unique so re-registering the same device upserts instead of duplicating.
+model DevicePushToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  token      String  @unique
+  platform   String? // "ios" | "android"
+  deviceName String?
+
+  lastUsedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@map("device_push_tokens")
+}

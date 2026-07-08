@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
 import { notificationServices } from "./notifications.service";
 import { sendSuccess } from "../../../utils/apiResponse";
-import type { ListNotificationsQuery } from "./notifications.validation";
+import type {
+  ListNotificationsQuery,
+  RegisterDeviceInput,
+  UnregisterDeviceInput,
+} from "./notifications.validation";
 
 // ─── List Notifications ──────────────────────────────────────────
 export const listNotifications = async (req: Request, res: Response): Promise<void> => {
@@ -48,5 +52,33 @@ export const markAllAsRead = async (req: Request, res: Response): Promise<void> 
     statusCode: 200,
     message: "All notifications marked as read.",
     data: { updatedCount: result.updatedCount },
+  });
+};
+
+// ─── Register This Device For Push ───────────────────────────────
+export const registerDevice = async (req: Request, res: Response): Promise<void> => {
+  const userId = res.locals.auth!.userId;
+  const input = req.validated as RegisterDeviceInput;
+
+  const result = await notificationServices.registerDevice(userId, input);
+
+  sendSuccess(res, {
+    statusCode: 200,
+    message: result.ok ? "Device registered for push notifications." : "Invalid push token.",
+    data: { registered: result.ok },
+  });
+};
+
+// ─── Unregister This Device ──────────────────────────────────────
+export const unregisterDevice = async (req: Request, res: Response): Promise<void> => {
+  const userId = res.locals.auth!.userId;
+  const { token } = req.validated as UnregisterDeviceInput;
+
+  await notificationServices.unregisterDevice(userId, token);
+
+  sendSuccess(res, {
+    statusCode: 200,
+    message: "Device unregistered.",
+    data: { unregistered: true },
   });
 };

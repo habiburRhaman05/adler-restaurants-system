@@ -13,13 +13,8 @@ await prisma.$transaction(async (tx) => {
   await tx.demandWeek.deleteMany({});
   await tx.availabilityDay.deleteMany({});
   await tx.availabilityMonth.deleteMany({});
-  // await tx.shiftAssignment.deleteMany({});
   await tx.shift.deleteMany({});
-
   await tx.userCategory.deleteMany({});
-
-  // await tx.category.deleteMany({});
-
   await tx.user.deleteMany({});
 });
 

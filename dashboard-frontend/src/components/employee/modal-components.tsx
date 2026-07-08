@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 
 import {
   Dialog,
@@ -89,6 +89,11 @@ export function EmployeeFormModal({
 }: EmployeeFormModalProps) {
   const [form, setForm] = useState<EmployeeInput>(DEFAULT_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
 
   // Initialize form when editing
   useEffect(() => {
@@ -224,7 +229,7 @@ export function EmployeeFormModal({
                   value={form.phone || ''}
                   onChange={(e) => handleChange('phone', e.target.value)}
                   disabled={isLoading}
-                  className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white"
+                  className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white placeholder:text-slate-400"
                 />
               </FormField>
 
@@ -234,20 +239,32 @@ export function EmployeeFormModal({
                   value={form.address || ''}
                   onChange={(e) => handleChange('address', e.target.value)}
                   disabled={isLoading}
-                  className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white"
+                  className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white placeholder:text-slate-400"
                 />
               </FormField>
             </div>
             
             <FormField label="Password" error={errors.password} required={!isEditing}>
-              <Input
-                type="password"
+             <div className="flex items-center gap-2 relative">
+               <Input
+                type={showPassword ? 'text' : 'password'}
                 placeholder={isEditing ? "Leave blank to keep current password" : "Enter password (min 6 characters)"}
                 value={form.password || ''}
                 onChange={(e) => handleChange('password', e.target.value)}
                 disabled={isLoading}
-                className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white"
+                className="rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white placeholder:text-slate-400"
               />
+             <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {
+                showPassword ? (
+                  <Eye className="h-4 w-4 text-slate-500 cursor-pointer" onClick={togglePasswordVisibility} />
+                ) : (
+                  <EyeOff className="h-4 w-4 text-slate-500 cursor-pointer" onClick={togglePasswordVisibility} />
+                )
+              }
+             </div>
+             </div>
+
             </FormField>
           </div>
 
@@ -337,7 +354,7 @@ export function EmployeeFormModal({
                     value={form.hourlyRate || ''}
                     onChange={(e) => handleChange('hourlyRate', Number(e.target.value))}
                     disabled={isLoading}
-                    className="rounded-lg border-slate-200 focus:bg-white"
+                    className="rounded-lg border-slate-200 focus:bg-white placeholder:text-slate-400"
                   />
                 </FormField>
               )}
@@ -351,7 +368,7 @@ export function EmployeeFormModal({
                     value={form.monthlySalary || ''}
                     onChange={(e) => handleChange('monthlySalary', Number(e.target.value))}
                     disabled={isLoading}
-                    className="rounded-lg border-slate-200 focus:bg-white"
+                    className="rounded-lg border-slate-200 focus:bg-white placeholder:text-slate-400"
                   />
                 </FormField>
               )}
@@ -365,7 +382,7 @@ export function EmployeeFormModal({
                     value={form.contractedHoursMonthly || ''}
                     onChange={(e) => handleChange('contractedHoursMonthly', Number(e.target.value))}
                     disabled={isLoading}
-                    className="rounded-lg border-slate-200 focus:bg-white"
+                    className="rounded-lg border-slate-200 focus:bg-white placeholder:text-slate-400"
                   />
                 </FormField>
               )}
