@@ -1,23 +1,19 @@
 {
   "build": {
-"preview": {
-  "android": { "buildType": "apk" },
-}
-,
-    "preview2": {
+    "preview": {
       "android": {
-        "gradleCommand": ":app:assembleRelease"
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://adler-restaurants-system.vercel.app"
       }
-    },
-    "preview3": {
-      "developmentClient": true
-    },
-    "preview4": {
-      "distribution": "internal"
     },
     "production": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://adler-restaurants-system.vercel.app"
       }
     }
   }
