@@ -11,7 +11,6 @@ import { LoginPage } from '@/pages/login.page';
 import { NotFoundPage } from '@/pages/not-found.page';
 import { OverviewPage } from '@/pages/overview.page';
 
-import { ProfilePage } from '@/pages/profile.page';
 import { ReportsPage } from '@/pages/reports.page';
 import { SettingsPage } from '@/pages/settings.page';
 import DemandPage from '@/pages/DemandPage';
@@ -19,6 +18,8 @@ import { ScheduleListPage } from '@/pages/schedule-list.page';
 import { ScheduleDetailPage } from '@/pages/schedule-detail.page';
 import { LeavesPage } from '@/pages/leaves-page';
 import { NotificationsPage } from '@/pages/notifications.page';
+import { ForgotPasswordPage } from '@/pages/forgot-password.page';
+import { ResetPasswordPage } from '@/pages/reset-password.page';
 
 export const router = createBrowserRouter([
   {
@@ -42,8 +43,9 @@ export const router = createBrowserRouter([
       { path: 'categories', element: <CategoriesPage /> },
       { path: 'approvals', element: <ApprovalsPage /> },
       { path: 'reports', element: <ReportsPage /> },
+      // Profile and Settings are one combined Account page — both paths work.
       { path: 'settings', element: <SettingsPage /> },
-      { path: 'profile', element: <ProfilePage /> },
+      { path: 'profile', element: <SettingsPage /> },
       { path: 'demands', element: <DemandPage /> },
       { path: 'schedule', element: <ScheduleListPage /> },
       { path: 'schedule/:id', element: <ScheduleDetailPage /> },
@@ -55,6 +57,14 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
   },
   {
     path: '*',

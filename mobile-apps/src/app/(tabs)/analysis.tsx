@@ -6,6 +6,17 @@ import React, { useState } from 'react';
 import { Pressable, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useMyHours } from '@/features/schedule';
 
+// Distinct colours per role so the breakdown reads at a glance (cycled by index).
+const ROLE_PALETTE = [
+  { color: '#3B82F6', bgColor: '#EFF6FF' }, // blue
+  { color: '#10B981', bgColor: '#ECFDF5' }, // green
+  { color: '#A855F7', bgColor: '#F3E8FF' }, // purple
+  { color: '#F59E0B', bgColor: '#FEF3C7' }, // amber
+  { color: '#EC4899', bgColor: '#FCE7F3' }, // pink
+  { color: '#06B6D4', bgColor: '#ECFEFF' }, // cyan
+  { color: '#EF4444', bgColor: '#FEF2F2' }, // red
+];
+
 export default function AnalysisScreen() {
   const [month, setMonth] = useState(() => monthKey(new Date()));
   const query = useMyHours(month);
@@ -17,18 +28,23 @@ export default function AnalysisScreen() {
   const hourlyRate = data?.hourlyRate ?? null;
   const targetHours = data?.targetHours ?? null;
   const totalEarnings = hourlyRate !== null ? totalHours * hourlyRate : null;
+  const avgPerShift = shiftCount > 0 ? totalHours / shiftCount : 0;
+  // Progress toward the contracted monthly hours (capped at 100% for the bar).
+  const contractPct =
+    targetHours && targetHours > 0 ? Math.min(100, (totalHours / targetHours) * 100) : null;
 
   const roleHours: Record<string, number> = {};
   (data?.entries ?? []).forEach((e) => {
     roleHours[e.category.name] = (roleHours[e.category.name] || 0) + e.hours;
   });
 
-  const breakdown = Object.keys(roleHours).map((role) => ({
-    label: role,
-    hours: roleHours[role],
-    color: '#3B82F6',
-    bgColor: '#EFF6FF',
-  }));
+  const breakdown = Object.keys(roleHours)
+    .sort((a, b) => roleHours[b] - roleHours[a])
+    .map((role, i) => ({
+      label: role,
+      hours: roleHours[role],
+      ...ROLE_PALETTE[i % ROLE_PALETTE.length],
+    }));
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -88,9 +104,44 @@ export default function AnalysisScreen() {
                   </View>
                   <Text style={styles.statLabel}>Shifts</Text>
                   <Text style={styles.statValue}>{shiftCount}</Text>
+                  {shiftCount > 0 && (
+                    <Text style={[styles.statSubText, { color: colors.gray400 }]}>
+                      ~{avgPerShift.toFixed(1)}h avg
+                    </Text>
+                  )}
                 </View>
               </View>
             </View>
+
+            {/* Contract progress — how close to the contracted monthly hours */}
+            {contractPct !== null && targetHours !== null && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Contract Progress</Text>
+                <View style={[styles.card, { padding: 16 }]}>
+                  <View style={styles.roleHeader}>
+                    <Text style={styles.roleLabel}>
+                      {totalHours.toFixed(1)}h of {targetHours}h
+                    </Text>
+                    <Text style={[styles.roleHours, { color: colors.blue, fontWeight: '800' }]}>
+                      {Math.round(contractPct)}%
+                    </Text>
+                  </View>
+                  <View style={[styles.progressBarBg, { height: 10, borderRadius: 5, marginTop: 4 }]}>
+                    <View
+                      style={[
+                        styles.progressBarFill,
+                        { width: `${contractPct}%`, backgroundColor: contractPct >= 100 ? '#10B981' : colors.blue },
+                      ]}
+                    />
+                  </View>
+                  <Text style={[styles.statLabel, { marginTop: 10, marginBottom: 0 }]}>
+                    {totalHours >= targetHours
+                      ? 'You have met your contracted hours this month.'
+                      : `${(targetHours - totalHours).toFixed(1)}h remaining to reach your contract.`}
+                  </Text>
+                </View>
+              </View>
+            )}
 
             {/* Role Breakdown */}
             <View style={styles.section}>

@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { sendPushToUsers } from "../../../utils/push/push.service";
 import type {
   GenerateScheduleInput,
   GenerateMonthInput,
@@ -903,6 +904,15 @@ const publishSchedule = async (weekPlanId: string, adminId: string) => {
     }),
   ]);
 
+  // Buzz every affected employee's phone. Awaited (not fire-and-forget) because
+  // on serverless the function freezes after the response — but it never throws,
+  // so a push failure can't fail publishing.
+  await sendPushToUsers(assignedUserIds, {
+    title: "New weekly schedule published",
+    body: `Your shifts for ${weekLabel} are ready. Tap to review and respond.`,
+    data: { type: "WEEKLY_SHIFTS_PUBLISHED", screen: "schedule", weekPlanId: plan.id },
+  });
+
   return buildScheduleDetail(plan.id);
 };
 
@@ -1038,6 +1048,11 @@ const addShift = async (weekPlanId: string, data: CreateShiftInput) => {
         },
       }),
     ]);
+    await sendPushToUsers([data.userId], {
+      title: "Schedule updated",
+      body: `A new shift on ${dateOnly(date)} was added to your schedule.`,
+      data: { type: "SHIFT_CHANGED", screen: "schedule", weekPlanId: plan.id, shiftId: shift.id },
+    });
   }
 
   return {
@@ -1109,6 +1124,11 @@ const updateShift = async (weekPlanId: string, shiftId: string, data: UpdateShif
         },
       }),
     ]);
+    await sendPushToUsers([shift.userId], {
+      title: "Schedule updated",
+      body: `Your shift on ${dateOnly(shift.date)} was rescheduled. Tap to see the new time.`,
+      data: { type: "SHIFT_CHANGED", screen: "schedule", weekPlanId: plan.id, shiftId },
+    });
   }
 
   return { shift: updated, ruleViolations: violations, rulePassed: violations.length === 0 };
@@ -1139,6 +1159,11 @@ const removeShift = async (weekPlanId: string, shiftId: string) => {
         },
       }),
     ]);
+    await sendPushToUsers([shift.userId], {
+      title: "Schedule updated",
+      body: `Your shift on ${dateOnly(shift.date)} was removed from the schedule.`,
+      data: { type: "SHIFT_CHANGED", screen: "schedule", weekPlanId: plan.id },
+    });
   }
 };
 

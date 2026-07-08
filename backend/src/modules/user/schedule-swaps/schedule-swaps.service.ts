@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { sendPushToUsers } from "../../../utils/push/push.service";
 import type {
   SearchSwapTargetsQuery,
   CreateScheduleSwapInput,
@@ -297,6 +298,12 @@ const createSwap = async (userId: string, data: CreateScheduleSwapInput) => {
     }),
   ]);
 
+  await sendPushToUsers([data.recipientUserId], {
+    title: "Shift swap request",
+    body: `${displayName(initiatorShift.user)} wants to swap shifts with you. Tap to respond.`,
+    data: { type: "SWAP_REQUEST_RECEIVED", screen: "swaps", swapId: swap.id },
+  });
+
   return swap;
 };
 
@@ -383,6 +390,14 @@ const respondToSwap = async (userId: string, swapId: string, data: RespondSwapIn
       },
     }),
   ]);
+
+  await sendPushToUsers([swap.initiatorUserId], {
+    title: accepted ? "Swap accepted — awaiting admin" : "Swap declined",
+    body: accepted
+      ? `${recipientName} accepted your swap request. It now needs admin approval.`
+      : `${recipientName} declined your swap request.`,
+    data: { type: "SWAP_REQUEST_RESULT", screen: "swaps", swapId },
+  });
 
   return updated;
 };

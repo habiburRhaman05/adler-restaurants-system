@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { Download, TrendingUp, Clock, Wallet } from "lucide-react";
+import { Download, TrendingUp, Clock, Wallet, FileText } from "lucide-react";
 import { toast } from "sonner";
+import type { ReportEmployee } from "@/features/reports/api/report.service";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,22 @@ export function ReportsPage() {
     const url = reportService.getExportUrl(queryParams);
     window.open(url, "_blank");
     toast.success("Downloading CSV report...");
+  };
+
+  // Render a single-employee payslip into an isolated print window. Kept fully
+  // self-contained (its own HTML doc) so it can never affect the dashboard's
+  // layout, and uses the browser's native "Save as PDF" from the print dialog.
+  const openPayslip = (e: ReportEmployee) => {
+    const w = window.open("", "_blank", "width=820,height=940");
+    if (!w) {
+      toast.error("Please allow pop-ups to open the payslip.");
+      return;
+    }
+    w.document.write(buildPayslipHtml(e, year, month));
+    w.document.close();
+    w.focus();
+    // Let the new document lay out before invoking print.
+    setTimeout(() => w.print(), 350);
   };
 
   const { data: attendanceData, isLoading: isLoadingAttendance } = useAttendanceList({
@@ -148,7 +165,8 @@ export function ReportsPage() {
                   <th className="text-right py-4 px-4">Worked</th>
                   <th className="text-right py-4 px-4">Overtime</th>
                   <th className="text-right py-4 px-4">Due</th>
-                  <th className="text-right py-4 px-6">Wage</th>
+                  <th className="text-right py-4 px-4">Wage</th>
+                  <th className="text-center py-4 px-6">Payslip</th>
                 </tr>
               </thead>
               <tbody>
@@ -160,7 +178,8 @@ export function ReportsPage() {
                     <td className="py-4 px-4"><Skeleton className="h-4 w-12 ml-auto rounded-lg" /></td>
                     <td className="py-4 px-4"><Skeleton className="h-4 w-12 ml-auto rounded-lg" /></td>
                     <td className="py-4 px-4"><Skeleton className="h-4 w-12 ml-auto rounded-lg" /></td>
-                    <td className="py-4 px-6"><Skeleton className="h-4 w-20 ml-auto rounded-lg" /></td>
+                    <td className="py-4 px-4"><Skeleton className="h-4 w-20 ml-auto rounded-lg" /></td>
+                    <td className="py-4 px-6"><Skeleton className="h-8 w-24 mx-auto rounded-lg" /></td>
                   </tr>
                 ))}
 
@@ -199,7 +218,17 @@ export function ReportsPage() {
                       <td className="py-4 px-4 text-right">
                         {e.dueHours > 0 ? <span className="text-red-700 font-bold bg-red-50 border border-red-200/60 px-2 py-1 rounded-lg shadow-sm shadow-red-100">{e.dueHours} h</span> : <span className="text-slate-400 font-medium">—</span>}
                       </td>
-                      <td className="py-4 px-6 text-right font-bold text-slate-900">CHF {e.wageCost.toLocaleString()}</td>
+                      <td className="py-4 px-4 text-right font-bold text-slate-900">CHF {e.wageCost.toLocaleString()}</td>
+                      <td className="py-4 px-6 text-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-lg font-semibold border-slate-200 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all"
+                          onClick={() => openPayslip(e)}
+                        >
+                          <FileText className="h-3.5 w-3.5 mr-1.5" /> Payslip
+                        </Button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -270,6 +299,86 @@ export function ReportsPage() {
       </Tabs>
     </div>
   );
+}
+
+// ─── Payslip (isolated print document) ───────────────────────────────────────
+
+const monthName = (m: number) => new Date(2000, m - 1).toLocaleString("en", { month: "long" });
+
+// Escape any user-derived text before it goes into the payslip HTML.
+const esc = (s: string) =>
+  s.replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string)
+  );
+
+function buildPayslipHtml(e: ReportEmployee, year: number, month: number): string {
+  const period = `${monthName(month)} ${year}`;
+  const rateLine =
+    e.hourlyRate != null
+      ? `CHF ${e.hourlyRate.toFixed(2)} / hour`
+      : e.monthlySalary != null
+        ? `CHF ${e.monthlySalary.toLocaleString()} / month`
+        : "—";
+  const rows: [string, string][] = [
+    ["Contracted hours", `${e.contractedHours} h`],
+    ["Scheduled hours", `${e.scheduledHours} h`],
+    ["Worked hours", `${e.workedHours} h`],
+    ["Overtime", `${e.overtimeHours} h`],
+    ["Hours due", `${e.dueHours} h`],
+  ];
+  const rowHtml = rows
+    .map(
+      ([label, val]) =>
+        `<tr><td class="lbl">${label}</td><td class="val">${val}</td></tr>`
+    )
+    .join("");
+  const categories = e.categories.map((c) => esc(c.name)).join(", ") || "—";
+  const contract = `${esc(e.contractType.replace("_", " ").toLowerCase())} · ${e.workloadPercent}%`;
+
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>Payslip — ${esc(e.name)} — ${period}</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color: #0f172a; margin: 0; padding: 40px; background: #fff; }
+  .sheet { max-width: 640px; margin: 0 auto; }
+  .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #2563eb; padding-bottom: 16px; margin-bottom: 24px; }
+  .brand { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .brand span { color: #2563eb; }
+  .doc { text-align: right; }
+  .doc .t { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
+  .doc .p { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .who { margin-bottom: 24px; }
+  .who .name { font-size: 20px; font-weight: 800; }
+  .who .meta { color: #64748b; font-size: 13px; margin-top: 4px; text-transform: capitalize; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  td { padding: 11px 4px; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
+  td.lbl { color: #475569; font-weight: 500; }
+  td.val { text-align: right; font-weight: 700; }
+  .pay { margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; }
+  .pay .rate { color: #64748b; font-size: 13px; font-weight: 600; }
+  .pay .gross { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; }
+  .pay .gross .g-l { font-weight: 700; font-size: 15px; }
+  .pay .gross .g-v { font-weight: 800; font-size: 26px; color: #2563eb; letter-spacing: -0.5px; }
+  .foot { margin-top: 28px; font-size: 11px; color: #94a3b8; line-height: 1.5; }
+  @media print { body { padding: 0; } .sheet { max-width: 100%; } }
+</style></head>
+<body><div class="sheet">
+  <div class="head">
+    <div class="brand">Adler<span>.</span></div>
+    <div class="doc"><div class="t">Payslip</div><div class="p">${period}</div></div>
+  </div>
+  <div class="who">
+    <div class="name">${esc(e.name)}</div>
+    <div class="meta">${contract} &nbsp;·&nbsp; ${categories}</div>
+  </div>
+  <table><tbody>${rowHtml}</tbody></table>
+  <div class="pay">
+    <div class="rate">Rate: ${rateLine}</div>
+    <div class="gross"><span class="g-l">Gross pay (estimate)</span><span class="g-v">CHF ${e.wageCost.toLocaleString()}</span></div>
+  </div>
+  <div class="foot">Generated ${new Date().toLocaleDateString("en-GB")} · System-generated estimate from recorded hours. Not a legal payroll document.</div>
+</div></body></html>`;
 }
 
 function SumCard({ icon, label, value, accent, colorClass, loading }: { icon: React.ReactNode; label: string; value: string; accent?: boolean; colorClass: string; loading?: boolean }) {
