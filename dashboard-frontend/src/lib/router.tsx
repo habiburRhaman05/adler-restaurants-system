@@ -20,6 +20,7 @@ import { LeavesPage } from '@/pages/leaves-page';
 import { NotificationsPage } from '@/pages/notifications.page';
 import { ForgotPasswordPage } from '@/pages/forgot-password.page';
 import { ResetPasswordPage } from '@/pages/reset-password.page';
+import { AvailabilityPage } from '@/pages/availability.page';
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
       { path: 'demands', element: <DemandPage /> },
       { path: 'schedule', element: <ScheduleListPage /> },
       { path: 'schedule/:id', element: <ScheduleDetailPage /> },
+      { path: 'availability', element: <AvailabilityPage /> },
       { path: 'leaves', element: <LeavesPage /> },
       { path: 'attendance', element: <AttendancePage /> },
       { path: 'notifications', element: <NotificationsPage /> },
