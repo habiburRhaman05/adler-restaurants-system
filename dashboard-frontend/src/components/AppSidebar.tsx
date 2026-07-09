@@ -11,6 +11,7 @@ import {
   UtensilsCrossed,
   Plane,
   Clock,
+  CalendarCheck,
 } from "lucide-react";
 
 import {
@@ -35,6 +36,7 @@ const items = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
   { title: "Schedule planner", url: "/dashboard/schedule", icon: CalendarRange },
   // { title: "Plans", url: "/dashboard/plans", icon: Layers },\
+  { title: "Availability", url: "/dashboard/availability", icon: CalendarCheck },
   { title: "Demands", url: "/dashboard/demands", icon: ClipboardList },
   { title: "Employees", url: "/dashboard/employees", icon: Users },
   { title: "Categories", url: "/dashboard/categories", icon: Layers },

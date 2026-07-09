@@ -3,7 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --go",
+    "start:dev-client": "expo start",
     "mock": "npm --prefix mock-server start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",

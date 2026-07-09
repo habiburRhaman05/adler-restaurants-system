@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { sendPushToUsers } from "../../../utils/push/push.service";
 import type { ListLeavesQuery, ReviewLeaveInput } from "./leaves.validation";
 import type { Prisma } from "../../../generated/prisma/client";
 
@@ -134,6 +135,16 @@ const approveLeave = async (leaveId: string, adminId: string, data: ReviewLeaveI
     }),
   ]);
 
+  // Buzz the employee's phone. Awaited (serverless freezes after the response)
+  // but never throws, so a push failure can't fail the approval.
+  await sendPushToUsers([leave.userId], {
+    title: "Leave approved",
+    body: `Your ${leave.leaveType.toLowerCase()} leave from ${leave.startDate
+      .toISOString()
+      .slice(0, 10)} to ${leave.endDate.toISOString().slice(0, 10)} has been approved.`,
+    data: { type: "LEAVE_REQUEST_RESULT", screen: "leaves", leaveId, result: "APPROVED" },
+  });
+
   return { leave: updated, cancelledShiftCount: cancelled.count };
 };
 
@@ -168,6 +179,14 @@ const rejectLeave = async (leaveId: string, adminId: string, data: ReviewLeaveIn
       },
     }),
   ]);
+
+  await sendPushToUsers([leave.userId], {
+    title: "Leave not approved",
+    body: `Your ${leave.leaveType.toLowerCase()} leave request was not approved.${
+      data.adminNote ? ` Note: ${data.adminNote}` : ""
+    }`,
+    data: { type: "LEAVE_REQUEST_RESULT", screen: "leaves", leaveId, result: "REJECTED" },
+  });
 
   return { leave: updated };
 };

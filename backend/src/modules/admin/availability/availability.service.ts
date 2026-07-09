@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db";
 import { AppError } from "../../../utils/AppError";
+import { sendPushToUsers } from "../../../utils/push/push.service";
 import type { OpenAvailabilityInput } from "./availability.validation";
 import type { Prisma } from "../../../generated/prisma/client";
 
@@ -184,6 +185,7 @@ const nudge = async (userId: string, year: number, month: number) => {
     throw new AppError("This employee has already submitted their availability.", 409);
   }
 
+  const body = `Please submit your availability for ${String(month).padStart(2, "0")}/${year} before the cut-off.`;
   await prisma.notification.create({
     data: {
       userId,
@@ -191,10 +193,17 @@ const nudge = async (userId: string, year: number, month: number) => {
       channel: "IN_APP",
       status: "SENT",
       title: "Availability reminder",
-      body: `Please submit your availability for ${String(month).padStart(2, "0")}/${year} before the cut-off.`,
+      body,
       sentAt: new Date(),
       payload: { year, month },
     },
+  });
+
+  // Buzz the phone too — best-effort, never fails the request.
+  await sendPushToUsers([userId], {
+    title: "Availability reminder",
+    body,
+    data: { type: "AVAILABILITY_REMINDER", screen: "availability", year, month },
   });
 
   return { notified: true };
