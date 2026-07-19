@@ -64,7 +64,7 @@ function StatCard({
   loading?: boolean;
 }) {
   return (
-    <Card className="rounded-2xl shadow-md shadow-slate-100/50 bg-white/90 backdrop-blur-sm border border-slate-200/80 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/60 hover:-translate-y-0.5">
+    <Card className=" rounded-2xl shadow-md shadow-slate-100/50 bg-white/90 backdrop-blur-sm border border-slate-200/80 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/60 hover:-translate-y-0.5">
       <CardContent className="p-6">
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
           <span
@@ -452,7 +452,7 @@ export function AttendancePage() {
   const monthVal = currentMonth();
 
   return (
-    <div className="p-4 md:p-8 space-y-6 max-w-[1600px]">
+    <div className="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto">
       <header>
         <p className="text-xs uppercase tracking-widest text-blue-500 font-semibold">
           Monitoring
