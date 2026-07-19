@@ -14,7 +14,7 @@ export function CategoriesPage() {
   const categories = data?.data?.categories ?? [];
 
   return (
-    <div className="p-4 md:p-8 space-y-6 max-w-[1600px]">
+    <div className="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto">
       <CategoryHeader onAddClick={() => setAddOpen(true)} />
 
       <CategoriesList

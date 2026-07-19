@@ -64,7 +64,7 @@ export function ScheduleListPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-8 font-sans pb-24">
-      <div className="w-full mx-auto space-y-6 ">
+      <div className="max-w-[1600px] mx-auto space-y-6 ">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">

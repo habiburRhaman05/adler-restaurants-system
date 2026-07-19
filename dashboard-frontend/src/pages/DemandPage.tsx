@@ -65,7 +65,7 @@ function cloneValues(categories: CategoryDemandRow[]) {
 
 function DemandTable({ days, categories, draft, onStep }: any) {
   return (
-    <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
+    <table className=" border-collapse" style={{ tableLayout: "fixed" }}>
       <thead>
         <tr>
           <th className="text-left text-xs font-medium text-gray-500 pb-2 pr-2 w-32">Category</th>
@@ -403,8 +403,8 @@ export default function DemandPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-8">
-      <div className="w-full mx-auto flex flex-col gap-6">
+    <div className="min-h-screen bg-gray-50 py-8 px-8 ">
+      <div className="max-w-[1600px] mx-auto flex flex-col gap-6">
   
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

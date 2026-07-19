@@ -93,7 +93,7 @@ export function AvailabilityPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-6 max-w-[1600px]">
+    <div className="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-widest text-blue-500 font-semibold">Planning</p>

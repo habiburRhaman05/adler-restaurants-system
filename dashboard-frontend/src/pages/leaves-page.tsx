@@ -63,7 +63,7 @@ export function LeavesPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-6 max-w-[1600px]">
+    <div className="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto">
       <header>
         <p className="text-xs uppercase tracking-widest text-blue-500 font-semibold">Approvals</p>
         <h1 className="text-3xl md:text-4xl font-bold mt-1 text-slate-900 tracking-tight">Leave Requests</h1>
